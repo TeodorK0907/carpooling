@@ -52,21 +52,41 @@ CREATE TABLE users
     constraint users_roles_role_id_fk
         foreign key (role_id) references roles (role_id)
 );
---todo research Microsoft Bing Maps prior to creating separate tables for locations
+--todo try first using points only
+CREATE TABLE addresses
+(
+    address_id   serial primary key,
+    address_name varchar(250) not null
+);
+
+CREATE TABLE points
+(
+    point_id  serial primary key,
+    address   varchar(250) not null,
+    latitude  double precision not null,
+    longitude double precision not null
+--     constraint points_addresses_address_fk
+--         foreign key (address) references addresses (address_id)
+);
+--todo to test out with comment as a separate entity first before making it a part of a travel entity
 CREATE TABLE travels
 (
     travel_id        serial primary key,
-    created_by       int          not null,
-    starting_point   varchar(250) not null,
-    ending_point     varchar(250) not null,
-    departure_time   time         not null,
-    free_spots       int          not null,
-    comment_id       int,
-    travel_status_id int          not null,
+    created_by       int  not null,
+    starting_point   int  not null,
+    ending_point     int  not null,
+    departure_time   time not null,
+    free_spots       int  not null,
+--     comment_id       int,
+    travel_status_id int  not null,
     constraint travels_users_created_by_fk
         foreign key (created_by) references users (user_id),
-    constraint travels_comments_comment_id_fk
-        foreign key (comment_id) references comments (comment_id),
+    constraint travels_points_starting_point_id_fk
+        foreign key (starting_point) references points (point_id),
+    constraint travels_points_ending_point_id_fk
+        foreign key (ending_point) references points (point_id),
+--     constraint travels_comments_comment_id_fk
+--         foreign key (comment_id) references comments (comment_id),
     constraint travels_travel_statuses_travel_status_id_fk
         foreign key (travel_status_id) references travel_statuses (status_id)
 );
