@@ -41,16 +41,14 @@ CREATE TABLE users
     phone_number        varchar(10)  not null,
     driver_rating_id    int          not null,
     passenger_rating_id int          not null,
-    role_id             int     default 1,
+    role_id             int,
     is_blocked          boolean default false,
     is_archived         boolean default false,
     profile_picture     varchar(100) null,
     constraint users_feedbacks_driver_rating_id_fk
         foreign key (driver_rating_id) references feedbacks (feedback_id),
     constraint users_feedbacks_passenger_rating_id_fk
-        foreign key (passenger_rating_id) references feedbacks (feedback_id),
-    constraint users_roles_role_id_fk
-        foreign key (role_id) references roles (role_id)
+        foreign key (passenger_rating_id) references feedbacks (feedback_id)
 );
 --todo try first using points only
 CREATE TABLE addresses
@@ -62,7 +60,7 @@ CREATE TABLE addresses
 CREATE TABLE points
 (
     point_id  serial primary key,
-    address   varchar(250) not null,
+    address   varchar(250)     not null,
     latitude  double precision not null,
     longitude double precision not null
 --     constraint points_addresses_address_fk
