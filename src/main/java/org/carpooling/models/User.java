@@ -1,6 +1,7 @@
 package org.carpooling.models;
 
 import jakarta.persistence.*;
+import org.carpooling.helpers.UserRole;
 
 import java.util.Objects;
 
@@ -29,9 +30,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "passenger_rating_id", referencedColumnName = "feedback_id")
     private Rating passengerRating;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @Enumerated
+    @Column(name = "role_id")
+    private UserRole role;
     @Column(name = "is_blocked")
     private boolean isBlocked;
     @Column(name = "is_archived")
@@ -70,7 +71,7 @@ public class User {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
+    public void setFirstName(String firstname) {
         this.firstname = firstname;
     }
 
@@ -78,7 +79,7 @@ public class User {
         return lastname;
     }
 
-    public void setLastname(String lastname) {
+    public void setLastName(String lastname) {
         this.lastname = lastname;
     }
 
@@ -114,11 +115,11 @@ public class User {
         this.passengerRating = passengerRating;
     }
 
-    public Role getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
