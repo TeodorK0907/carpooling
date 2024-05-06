@@ -1,9 +1,11 @@
 package org.carpooling.controllers.rest;
 
+import org.carpooling.mappers.UserMapper;
 import org.carpooling.models.User;
+import org.carpooling.models.input_dto.UpdateUserDto;
+import org.carpooling.models.input_dto.UserDto;
 import org.carpooling.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +16,13 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping
@@ -35,7 +40,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable int id,
                                            @RequestBody UpdateUserDto dto) {
-        User userToUpdate = userMapper.toObj(dto);
+        User userToUpdate = userMapper.toObj(id, dto);
         userService.update(userToUpdate);
         return ResponseEntity.ok().body(userToUpdate);
     }

@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "roles")
+//@Entity
+//@Table(name = "roles")
 public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "role_id")
     private int id;
-    //todo make role names enums
-    @Column(name = "role_name")
+    //todo revert to role class if role enum does not work as intended.
+   // @Column(name = "role_name")
     private String name;
 
     public Role() {
