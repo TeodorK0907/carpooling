@@ -1,12 +1,12 @@
 package org.carpooling.models;
 
 import jakarta.persistence.*;
-import org.carpooling.helpers.UserRole;
+import org.carpooling.helpers.model_constants.UserRole;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "rose-valley-travel")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +34,9 @@ public class User {
     @Column(name = "role_id")
     private UserRole role;
     @Column(name = "is_blocked")
-    private boolean isBlocked;
+    private boolean blocked;
     @Column(name = "is_archived")
-    private boolean isArchived;
+    private boolean archived;
     @Column(name = "profile_picture")
     private String profilePicture;
 
@@ -124,19 +124,19 @@ public class User {
     }
 
     public boolean isBlocked() {
-        return isBlocked;
+        return blocked;
     }
 
     public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
+        this.blocked = blocked;
     }
 
     public boolean isArchived() {
-        return isArchived;
+        return archived;
     }
 
     public void setArchived(boolean archived) {
-        isArchived = archived;
+        this.archived = archived;
     }
 
     public String getProfilePicture() {
@@ -152,8 +152,8 @@ public class User {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
         return id == user.id
-                && isBlocked == user.isBlocked
-                && isArchived == user.isArchived
+                && blocked == user.blocked
+                && archived == user.archived
                 && Objects.equals(username, user.username)
                 && Objects.equals(password, user.password)
                 && Objects.equals(firstname, user.firstname)
@@ -171,6 +171,6 @@ public class User {
         return Objects.hash(id, username, password,
                 firstname, lastname, email,
                 phoneNumber, driverRating, passengerRating,
-                role, isBlocked, isArchived, profilePicture);
+                role, blocked, archived, profilePicture);
     }
 }
