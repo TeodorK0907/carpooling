@@ -28,12 +28,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll(UserFilterOptions filter) {
-        List<User> users = userRepository
-                .findAllByArchivedIsFalseAndUsernameLikeOrEmailLikeOrPhoneNumberLike(
-                        UserFilterValidator.isFilterEmpty(filter.getUsername()),
-                        UserFilterValidator.isFilterEmpty(filter.getEmail()),
-                        UserFilterValidator.isFilterEmpty(filter.getPhoneNumber())
-                );
+        List<User> users;
+        if (UserFilterValidator.isFilterEmpty(filter)) {
+            users = userRepository.findAllByArchivedIsFalse();
+        } else {
+            users = userRepository
+                    .findAllByArchivedIsFalseAndUsernameLikeOrEmailLikeOrPhoneNumberLike(
+                            UserFilterValidator.isFilterEmpty(filter.getUsername()),
+                            UserFilterValidator.isFilterEmpty(filter.getEmail()),
+                            UserFilterValidator.isFilterEmpty(filter.getPhoneNumber())
+                    );
+        }
         UserValidator.validateIfUserListIsEmpty(users);
         return users;
     }

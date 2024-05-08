@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
+    List<User> findAllByArchivedIsFalse();
     List<User> findAllByArchivedIsFalseAndUsernameLikeOrEmailLikeOrPhoneNumberLike(String username,
                                                                                    String email,
                                                                                    String phoneNumber);
