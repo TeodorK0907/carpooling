@@ -1,20 +1,24 @@
 package org.carpooling.mappers;
 
-import org.carpooling.helpers.UserRole;
+import org.carpooling.helpers.model_constants.UserRole;
 import org.carpooling.models.User;
 import org.carpooling.models.input_dto.UpdateUserDto;
 import org.carpooling.models.input_dto.UserDto;
-import org.carpooling.services.UserService;
+import org.carpooling.services.contracts.RatingService;
+import org.carpooling.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
     private final UserService userService;
+    private final RatingService ratingService;
 
     @Autowired
-    public UserMapper (UserService userService) {
+    public UserMapper (UserService userService,
+                       RatingService ratingService) {
         this.userService = userService;
+        this.ratingService = ratingService;
     }
 
     public User toObj (UserDto dto) {
@@ -37,6 +41,8 @@ public class UserMapper {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setEmail(dto.getEmail());
         user.setRole(UserRole.USER);
+        user.setDriverRating(ratingService.createRating());
+        user.setPassengerRating(ratingService.createRating());
     }
 
     private void populateUserObj(User user, UpdateUserDto dto) {

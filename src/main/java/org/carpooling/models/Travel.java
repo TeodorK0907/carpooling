@@ -1,13 +1,13 @@
 package org.carpooling.models;
 
 import jakarta.persistence.*;
-import org.carpooling.helpers.TravelStatus;
+import org.carpooling.helpers.model_constants.TravelStatus;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "travels")
+@Table(name = "travels", schema = "rose-valley-travel")
 public class Travel {
 
     @Id
