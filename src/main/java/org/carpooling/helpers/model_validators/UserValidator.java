@@ -1,4 +1,4 @@
-package org.carpooling.helpers;
+package org.carpooling.helpers.model_validators;
 
 import org.carpooling.exceptions.DuplicateEntityException;
 import org.carpooling.exceptions.EntityNotFoundException;
