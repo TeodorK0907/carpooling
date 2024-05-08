@@ -1,11 +1,12 @@
 package org.carpooling.services.contracts;
 
+import org.carpooling.helpers.UserFilterOptions;
 import org.carpooling.models.User;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> getAll();
+    List<User> getAll(UserFilterOptions filter);
 
     User getById(int userId);
 

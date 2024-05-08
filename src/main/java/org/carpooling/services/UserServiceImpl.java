@@ -1,7 +1,9 @@
 package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
-import org.carpooling.helpers.UserValidator;
+import org.carpooling.helpers.UserFilterOptions;
+import org.carpooling.helpers.model_validators.UserFilterValidator;
+import org.carpooling.helpers.model_validators.UserValidator;
 import org.carpooling.models.User;
 import org.carpooling.repositories.UserRepository;
 import org.carpooling.services.contracts.UserService;
@@ -25,8 +27,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        List<User> users = userRepository.findAllByArchivedIsFalse();
+    public List<User> getAll(UserFilterOptions filter) {
+        List<User> users = userRepository
+                .findAllByArchivedIsFalseAndUsernameLikeOrEmailLikeOrPhoneNumberLike(
+                        UserFilterValidator.isFilterEmpty(filter.getUsername()),
+                        UserFilterValidator.isFilterEmpty(filter.getEmail()),
+                        UserFilterValidator.isFilterEmpty(filter.getPhoneNumber())
+                );
         UserValidator.validateIfUserListIsEmpty(users);
         return users;
     }
