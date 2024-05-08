@@ -9,6 +9,12 @@ public interface UserService {
 
     User getById(int userId);
 
+    User getByUsername(String username);
+
+    User getByEmail(String email);
+
+    User getByPhoneNumber(String phone_number);
+
     User create(User user);
 
     User update(User user);

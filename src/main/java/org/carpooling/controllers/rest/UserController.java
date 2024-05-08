@@ -39,6 +39,46 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable int id) {
+        try {
+            User user = userService.getById(id);
+            return ResponseEntity.ok().body(user);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<User> getUserByUsername(@RequestParam String username) {
+        try {
+            User user = userService.getByUsername(username);
+            return ResponseEntity.ok().body(user);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+        try {
+            User user = userService.getByEmail(email);
+            return ResponseEntity.ok().body(user);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<User> getUserByPhoneNumber(@RequestParam String phone_number) {
+        try {
+            User user = userService.getByPhoneNumber(phone_number);
+            return ResponseEntity.ok().body(user);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserDto dto) {
         try {

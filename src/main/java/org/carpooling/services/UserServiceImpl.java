@@ -7,8 +7,9 @@ import org.carpooling.repositories.UserRepository;
 import org.carpooling.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import static org.carpooling.helpers.model_constants.ModelNames.USER;
-import static org.carpooling.helpers.model_constants.attribute_constants.UserAttribute.ID;
+import static org.carpooling.helpers.model_constants.attribute_constants.UserAttribute.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,24 @@ public class UserServiceImpl implements UserService {
     public User getById(int userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException(USER.toString(), ID.toString(), String.valueOf(userId)));
+    }
+
+    @Override
+    public User getByUsername(String username) {
+        return userRepository.findUserByUsername(username).orElseThrow(
+                () -> new EntityNotFoundException(USER.toString(), USERNAME.toString(), username));
+    }
+
+    @Override
+    public User getByEmail(String email) {
+        return userRepository.findUserByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException(USER.toString(), EMAIL.toString(), email));
+    }
+
+    @Override
+    public User getByPhoneNumber(String phone_number) {
+        return userRepository.findUserByPhoneNumber(phone_number).orElseThrow(
+                () -> new EntityNotFoundException(USER.toString(), USERNAME.toString(), phone_number));
     }
 
     @Override
