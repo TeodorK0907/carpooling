@@ -19,8 +19,8 @@ CREATE TABLE comments
 CREATE TABLE feedbacks
 (
     feedback_id     serial primary key,
-    avg_feedback    float not null,
-    total_feedbacks int   not null
+    avg_feedback    float not null default 0,
+    total_feedbacks int   not null default 0
 --     user_id           int   not null,
 --     recipient_user_id int   not null,
 --     constraint feedbacks_users_user_id_fk
