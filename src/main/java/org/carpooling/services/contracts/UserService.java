@@ -1,4 +1,4 @@
-package org.carpooling.services;
+package org.carpooling.services.contracts;
 
 import org.carpooling.models.User;
 

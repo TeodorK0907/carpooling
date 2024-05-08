@@ -1,4 +1,4 @@
-package org.carpooling.helpers;
+package org.carpooling.helpers.model_constants;
 
 public enum TravelStatus {
     PLANNED("Planned"),
