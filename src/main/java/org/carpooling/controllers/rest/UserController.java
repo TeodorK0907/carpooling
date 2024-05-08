@@ -102,6 +102,26 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{id}/block")
+    public ResponseEntity<Void> blockUser(@PathVariable int id) {
+        try {
+            userService.block(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/unblock")
+    public ResponseEntity<Void> unblockUser(@PathVariable int id) {
+        try {
+            userService.unblock(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         try {

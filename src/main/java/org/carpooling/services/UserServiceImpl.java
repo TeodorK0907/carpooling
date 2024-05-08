@@ -94,6 +94,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void block(int id) {
+        User toBeBlocked = getById(id);
+        toBeBlocked.setBlocked(true);
+        userRepository.save(toBeBlocked);
+    }
+
+    @Override
+    public void unblock(int id) {
+        User toBeUnblocked = getById(id);
+        toBeUnblocked.setBlocked(false);
+        userRepository.save(toBeUnblocked);
+    }
+
+    @Override
     public void delete(int userId) {
         User toBeDeleted = getById(userId);
         toBeDeleted.setArchived(true);

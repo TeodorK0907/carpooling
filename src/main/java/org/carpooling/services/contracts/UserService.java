@@ -19,6 +19,10 @@ public interface UserService {
 
     User update(User user);
 
+    void block(int id);
+
+    void unblock(int id);
+
     void delete(int userId);
 
 }
