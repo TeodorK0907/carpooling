@@ -6,7 +6,7 @@ import org.carpooling.models.User;
 import java.util.List;
 
 public interface UserService {
-    List<User> getAll(UserFilterOptions filter);
+    List<User> getAll(User authenticatedUser, UserFilterOptions filter);
 
     User getById(int userId);
 
@@ -18,12 +18,12 @@ public interface UserService {
 
     User create(User user);
 
-    User update(User user);
+    User update(User authenticatedUser, User user);
 
-    void block(int id);
+    void block(User authenticatedUser, int userId);
 
-    void unblock(int id);
+    void unblock(User authenticatedUser, int userId);
 
-    void delete(int userId);
+    void delete(User authenticatedUser, int userId);
 
 }
