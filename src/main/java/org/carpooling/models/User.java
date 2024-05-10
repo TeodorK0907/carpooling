@@ -1,7 +1,7 @@
 package org.carpooling.models;
 
 import jakarta.persistence.*;
-import org.carpooling.helpers.model_constants.UserRole;
+import org.carpooling.helpers.constants.UserRole;
 
 import java.util.Objects;
 
