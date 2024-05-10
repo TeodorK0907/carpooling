@@ -1,13 +1,12 @@
-package org.carpooling.helpers.model_constants;
+package org.carpooling.helpers.constants;
 
-public enum ModelNames {
-    USER("user"),
-    TRAVEL("travel"),
-    RATING("rating");
+public enum UserRole {
+    USER("User"),
+    ADMIN("Admin");
 
     private final String description;
 
-    ModelNames(String description) {
+    UserRole(String description) {
         this.description = description;
     }
 
@@ -17,6 +16,6 @@ public enum ModelNames {
 
     @Override
     public String toString() {
-        return this.description;
+        return description;
     }
 }

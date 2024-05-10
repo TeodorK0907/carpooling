@@ -1,4 +1,4 @@
-package org.carpooling.helpers.model_validators;
+package org.carpooling.helpers.validators;
 
 import org.carpooling.helpers.UserFilterOptions;
 

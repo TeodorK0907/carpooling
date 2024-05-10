@@ -1,4 +1,4 @@
-package org.carpooling.helpers.error_helpers;
+package org.carpooling.helpers.errors;
 
 public class InputErrors {
     public static final String  FIELD_EMPTY = "Field cannot be empty.";

@@ -1,14 +1,16 @@
-package org.carpooling.helpers.model_validators;
+package org.carpooling.helpers.validators;
 
 import org.carpooling.exceptions.DuplicateEntityException;
 import org.carpooling.exceptions.EntityNotFoundException;
+import org.carpooling.exceptions.UnauthorizedOperationException;
+import org.carpooling.helpers.constants.UserRole;
 import org.carpooling.models.User;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.carpooling.helpers.model_constants.ModelNames.USER;
-import static org.carpooling.helpers.model_constants.attribute_constants.UserAttribute.*;
+import static org.carpooling.helpers.constants.ModelNames.USER;
+import static org.carpooling.helpers.constants.attribute_constants.UserAttribute.*;
 
 public class UserValidator {
     public static boolean doesUsernameExist(User existing, User toBeCreated) {
@@ -53,7 +55,14 @@ public class UserValidator {
         return userToValidate.isEmpty();
     }
 
-    public static boolean isIdDifferent(User existing, User toBeCreated) {
-        return existing.getId() != toBeCreated.getId();
+    public static boolean isIdDifferent(User existing, User fromDB) {
+        return existing.getId() != fromDB.getId();
+    }
+
+    public static boolean isAdmin(User user) {
+        if (!user.getRole().equals(UserRole.ADMIN)){
+            throw new UnauthorizedOperationException("You are unauthorized to perform the required action");
+        }
+        return true;
     }
 }
