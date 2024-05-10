@@ -1,12 +1,14 @@
-package org.carpooling.helpers.model_constants;
+package org.carpooling.helpers.constants;
 
-public enum UserRole {
-    USER("User"),
-    ADMIN("Admin");
+public enum TravelStatus {
+    PLANNED("Planned"),
+    ACTIVE("Active"),
+    CANCELLED("Cancelled"),
+    COMPLETED("Completed");
 
     private final String description;
 
-    UserRole(String description) {
+    TravelStatus(String description) {
         this.description = description;
     }
 

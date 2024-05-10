@@ -1,4 +1,4 @@
-package org.carpooling.helpers.error_helpers;
+package org.carpooling.helpers.errors;
 
 public class UserDtoErrors {
     public static final String FIRSTNAME = "Field should be between 2 and 20 symbols.";

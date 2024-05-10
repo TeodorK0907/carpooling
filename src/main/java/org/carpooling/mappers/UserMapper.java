@@ -1,6 +1,6 @@
 package org.carpooling.mappers;
 
-import org.carpooling.helpers.model_constants.UserRole;
+import org.carpooling.helpers.constants.UserRole;
 import org.carpooling.models.User;
 import org.carpooling.models.input_dto.UpdateUserDto;
 import org.carpooling.models.input_dto.UserDto;

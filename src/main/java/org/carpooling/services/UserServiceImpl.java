@@ -1,20 +1,20 @@
 package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
+import org.carpooling.exceptions.UnauthorizedOperationException;
 import org.carpooling.helpers.UserFilterOptions;
-import org.carpooling.helpers.model_validators.UserFilterValidator;
-import org.carpooling.helpers.model_validators.UserValidator;
+import org.carpooling.helpers.validators.UserFilterValidator;
+import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.User;
 import org.carpooling.repositories.UserRepository;
 import org.carpooling.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static org.carpooling.helpers.model_constants.ModelNames.USER;
-import static org.carpooling.helpers.model_constants.attribute_constants.UserAttribute.*;
+import static org.carpooling.helpers.constants.ModelNames.USER;
+import static org.carpooling.helpers.constants.attribute_constants.UserAttribute.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -27,7 +27,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll(UserFilterOptions filter) {
+    public List<User> getAll(User authUser, UserFilterOptions filter) {
+        UserValidator.isAdmin(authUser);
         List<User> users;
         if (UserFilterValidator.isFilterEmpty(filter)) {
             users = userRepository.findAllByArchivedIsFalse();
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
     public User getById(int userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException(USER.toString(), ID.toString(), String.valueOf(userId)));
+
     }
 
     @Override
@@ -69,60 +71,63 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        Optional<User> userToValidate;
-        userToValidate = userRepository.findUserByUsername(user.getUsername());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesUsernameExist(user, userToValidate.get());
-        }
-        userToValidate = userRepository.findUserByEmail(user.getEmail());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesEmailExist(user, userToValidate.get());
-        }
-        userToValidate = userRepository.findUserByPhoneNumber(user.getPhoneNumber());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesPhoneNumberExist(user, userToValidate.get());
+        doesUserDataAlreadyExist(user);
+        userRepository.save(user);
+        return user;
+    }
+
+    @Override
+    public User update(User authUser, User user) {
+        doesUserDataAlreadyExist(user);
+        if (UserValidator.isIdDifferent(authUser, user)) {
+            throw new UnauthorizedOperationException(
+                    "You are unauthorized to perform the required action");
         }
         userRepository.save(user);
         return user;
     }
 
     @Override
-    public User update(User user) {
-        Optional<User> userToValidate;
-        userToValidate = userRepository.findUserByUsername(user.getUsername());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesUsernameExist(user, userToValidate.get());
-        }
-        userToValidate = userRepository.findUserByEmail(user.getEmail());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesEmailExist(user, userToValidate.get());
-        }
-        userToValidate = userRepository.findUserByPhoneNumber(user.getPhoneNumber());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesPhoneNumberExist(user, userToValidate.get());
-        }
-        userRepository.save(user);
-        return user;
-    }
-
-    @Override
-    public void block(int id) {
+    public void block(User authUser, int id) {
+        UserValidator.isAdmin(authUser);
         User toBeBlocked = getById(id);
         toBeBlocked.setBlocked(true);
         userRepository.save(toBeBlocked);
     }
 
     @Override
-    public void unblock(int id) {
+    public void unblock(User authUser, int id) {
+        UserValidator.isAdmin(authUser);
         User toBeUnblocked = getById(id);
         toBeUnblocked.setBlocked(false);
         userRepository.save(toBeUnblocked);
     }
 
     @Override
-    public void delete(int userId) {
+    public void delete(User authUser, int userId) {
+
         User toBeDeleted = getById(userId);
+        if (UserValidator.isIdDifferent(authUser, toBeDeleted)) {
+            throw new UnauthorizedOperationException(
+                    "You are unauthorized to perform the required action");
+        }
         toBeDeleted.setArchived(true);
         userRepository.save(toBeDeleted);
+    }
+
+    private void doesUserDataAlreadyExist(User user) {
+        Optional<User> userToValidate;
+        userToValidate = userRepository.findUserByUsername(user.getUsername());
+        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
+            UserValidator.doesUsernameExist(user, userToValidate.get());
+        }
+        userToValidate = userRepository.findUserByEmail(user.getEmail());
+        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
+            UserValidator.doesEmailExist(user, userToValidate.get());
+        }
+        userToValidate = userRepository.findUserByPhoneNumber(user.getPhoneNumber());
+        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
+            UserValidator.doesPhoneNumberExist(user, userToValidate.get());
+        }
     }
 }

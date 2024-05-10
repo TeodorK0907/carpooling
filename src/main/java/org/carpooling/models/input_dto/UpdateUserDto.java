@@ -4,8 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.carpooling.helpers.error_helpers.InputErrors;
-import org.carpooling.helpers.error_helpers.UserDtoErrors;
+import org.carpooling.helpers.errors.InputErrors;
+import org.carpooling.helpers.errors.UserDtoErrors;
 
 public class UpdateUserDto {
 

@@ -2,8 +2,8 @@ package org.carpooling.models.input_dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.carpooling.helpers.error_helpers.InputErrors;
-import org.carpooling.helpers.error_helpers.UserDtoErrors;
+import org.carpooling.helpers.errors.InputErrors;
+import org.carpooling.helpers.errors.UserDtoErrors;
 
 public class UserDto extends UpdateUserDto {
 

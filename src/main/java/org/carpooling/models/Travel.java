@@ -1,7 +1,7 @@
 package org.carpooling.models;
 
 import jakarta.persistence.*;
-import org.carpooling.helpers.model_constants.TravelStatus;
+import org.carpooling.helpers.constants.TravelStatus;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
