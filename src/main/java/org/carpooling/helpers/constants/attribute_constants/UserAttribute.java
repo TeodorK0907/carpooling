@@ -1,4 +1,4 @@
-package org.carpooling.helpers.model_constants.attribute_constants;
+package org.carpooling.helpers.constants.attribute_constants;
 
 public enum UserAttribute {
     ID("id"),
