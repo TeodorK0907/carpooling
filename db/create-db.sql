@@ -50,6 +50,24 @@ CREATE TABLE users
     constraint users_feedbacks_passenger_rating_id_fk
         foreign key (passenger_rating_id) references feedbacks (feedback_id)
 );
+
+CREATE TABLE passengers
+(
+    passenger_id serial primary key,
+    user_id      int         not null,
+    username     varchar(20) not null,
+    gave_rating  boolean default false,
+    given_rating boolean default false
+);
+
+CREATE TABLE candidates
+(
+    candidate_id serial primary key,
+    user_id      int         not null,
+    username     varchar(20) not null
+);
+
+
 --todo try first using points only
 CREATE TABLE addresses
 (
