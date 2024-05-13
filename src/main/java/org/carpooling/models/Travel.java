@@ -5,6 +5,7 @@ import org.carpooling.helpers.constants.TravelStatus;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "travels", schema = "rose-valley-travel")
@@ -25,9 +26,17 @@ public class Travel {
     private TravelPoint endingTravelPoint;
     @Column(name = "departure_time")
     private LocalDateTime departureTime;
+    @Column(name = "free_spots")
+    private int free_spots;
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "travel_status_id")
     private TravelStatus status;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "passenger_id")
+    private Set<Passenger> passengers;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "candidate_id")
+    private Set<Candidate> candidates;
 
     public Travel () {
 
@@ -73,6 +82,14 @@ public class Travel {
         this.departureTime = departureTime;
     }
 
+    public int getFree_spots() {
+        return free_spots;
+    }
+
+    public void setFree_spots(int free_spots) {
+        this.free_spots = free_spots;
+    }
+
     public TravelStatus getStatus() {
         return status;
     }
@@ -81,20 +98,5 @@ public class Travel {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Travel travel)) return false;
-        return id == travel.id
-                && Objects.equals(creator, travel.creator)
-                && Objects.equals(startingTravelPoint, travel.startingTravelPoint)
-                && Objects.equals(endingTravelPoint, travel.endingTravelPoint)
-                && Objects.equals(departureTime, travel.departureTime)
-                && status == travel.status;
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, creator, startingTravelPoint, endingTravelPoint, departureTime, status);
-    }
 }
