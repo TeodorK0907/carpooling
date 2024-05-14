@@ -4,7 +4,7 @@ import org.carpooling.exceptions.DuplicateEntityException;
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthenticatedRequestException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
-import org.carpooling.helpers.UserFilterOptions;
+import org.carpooling.helpers.model_filters.UserFilterOptions;
 import org.carpooling.mappers.UserMapper;
 import org.carpooling.models.User;
 import org.carpooling.models.input_dto.UpdateUserDto;
