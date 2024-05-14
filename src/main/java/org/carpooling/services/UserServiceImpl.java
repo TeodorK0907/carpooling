@@ -2,7 +2,7 @@ package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
-import org.carpooling.helpers.UserFilterOptions;
+import org.carpooling.helpers.model_filters.UserFilterOptions;
 import org.carpooling.helpers.validators.UserFilterValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.User;
