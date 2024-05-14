@@ -148,7 +148,7 @@ public class TravelController {
         }
     }
 
-    @PutMapping("{id}/apply")
+    @PutMapping("{id}/resign")
     public ResponseEntity<Void> resignFromTravel(@RequestHeader HttpHeaders headers,
                                                  @PathVariable int id) {
         try {
@@ -181,7 +181,7 @@ public class TravelController {
         }
     }
 
-    @PutMapping("/{travelId}/approve/{candidateId}")
+    @PutMapping("/{travelId}/decline/{candidateId}")
     public ResponseEntity<Void> declineCandidate(@RequestHeader HttpHeaders headers,
                                                  @PathVariable int travelId,
                                                  @PathVariable int candidateId) {
