@@ -1,7 +1,7 @@
 package org.carpooling.helpers.errors;
 
 public enum AuthenticationErrors {
-    FAILED_AUTH("The requested resource requires authentication."),
+    AUTH_FAILED("The requested resource requires authentication."),
 
     AUTH_DETAILS_MISMATCH("Incorrect username or password.");
 
