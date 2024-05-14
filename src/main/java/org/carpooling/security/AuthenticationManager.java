@@ -20,7 +20,7 @@ public class AuthenticationManager {
 
     public User fetchUser(HttpHeaders headers) {
         if (!headers.containsKey(AUTHORIZATION_HEADER_NAME)) {
-            throw new UnauthenticatedRequestException(AuthenticationErrors.FAILED_AUTH.toString());
+            throw new UnauthenticatedRequestException(AuthenticationErrors.AUTH_FAILED.toString());
         }
         String authHeader = headers.getFirst(AUTHORIZATION_HEADER_NAME);
 
@@ -44,7 +44,7 @@ public class AuthenticationManager {
     private String getPassword(String authHeader) {
         int firstIntervalIndex = authHeader.indexOf(" ");
         if (firstIntervalIndex == -1) {
-            throw new UnauthenticatedRequestException(AuthenticationErrors.FAILED_AUTH.toString());
+            throw new UnauthenticatedRequestException(AuthenticationErrors.AUTH_FAILED.toString());
         }
         return authHeader.substring(firstIntervalIndex, + 1);
     }
@@ -52,7 +52,7 @@ public class AuthenticationManager {
     private String getUsername(String authHeader) {
         int firstIntervalIndex = authHeader.indexOf(" ");
         if (firstIntervalIndex == -1) {
-            throw new UnauthenticatedRequestException(AuthenticationErrors.FAILED_AUTH.toString());
+            throw new UnauthenticatedRequestException(AuthenticationErrors.AUTH_FAILED.toString());
         }
         return authHeader.substring(0, firstIntervalIndex);
     }
