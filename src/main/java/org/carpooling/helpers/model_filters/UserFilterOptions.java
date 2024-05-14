@@ -1,4 +1,4 @@
-package org.carpooling.helpers;
+package org.carpooling.helpers.model_filters;
 
 import java.util.Optional;
 

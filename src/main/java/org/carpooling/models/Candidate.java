@@ -1,17 +1,21 @@
 package org.carpooling.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+
 @Entity
-@Table(name = "candidates")
+@Table(name = "candidates", schema = "rose-valley-travel")
 public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "candidate_id")
     private int id;
-    @JoinColumn("user_id")
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
     private int userId;
+    @Column(name = "username")
     private String username;
 
     public Candidate() {

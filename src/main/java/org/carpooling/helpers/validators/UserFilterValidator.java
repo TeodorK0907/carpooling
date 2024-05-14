@@ -1,6 +1,6 @@
 package org.carpooling.helpers.validators;
 
-import org.carpooling.helpers.UserFilterOptions;
+import org.carpooling.helpers.model_filters.UserFilterOptions;
 
 import java.util.Optional;
 

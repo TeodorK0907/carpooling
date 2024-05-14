@@ -2,7 +2,8 @@ package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
-import org.carpooling.helpers.UserFilterOptions;
+import org.carpooling.helpers.constants.attribute_constants.UserAttribute;
+import org.carpooling.helpers.model_filters.UserFilterOptions;
 import org.carpooling.helpers.validators.UserFilterValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.User;
@@ -75,13 +76,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return user;
     }
-
+    //todo remove below magic String
     @Override
     public User update(User authUser, User user) {
         doesUserDataAlreadyExist(user);
         if (UserValidator.isIdDifferent(authUser, user)) {
             throw new UnauthorizedOperationException(
-                    "You are unauthorized to perform the required action");
+                    "You are unauthorized to perform the required action.");
         }
         userRepository.save(user);
         return user;
@@ -117,17 +118,28 @@ public class UserServiceImpl implements UserService {
 
     private void doesUserDataAlreadyExist(User user) {
         Optional<User> userToValidate;
-        userToValidate = userRepository.findUserByUsername(user.getUsername());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
+        boolean isUsernameDuplicated = true;
+        boolean isEmailDuplicated = true;
+        try {
+            userToValidate = userRepository.findUserByUsername(user.getUsername());
             UserValidator.doesUsernameExist(user, userToValidate.get());
+        } catch (EntityNotFoundException e) {
+            isUsernameDuplicated = false;
         }
-        userToValidate = userRepository.findUserByEmail(user.getEmail());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesEmailExist(user, userToValidate.get());
+        if (!isUsernameDuplicated) {
+            try {
+                userToValidate = userRepository.findUserByEmail(user.getEmail());
+                UserValidator.doesEmailExist(user, userToValidate.get());
+            } catch (EntityNotFoundException e) {
+                isEmailDuplicated = false;
+            }
         }
-        userToValidate = userRepository.findUserByPhoneNumber(user.getPhoneNumber());
-        if (!UserValidator.validateIfUserIsEmpty(userToValidate)) {
-            UserValidator.doesPhoneNumberExist(user, userToValidate.get());
+        if (!isEmailDuplicated) {
+            try {
+                userToValidate = userRepository.findUserByPhoneNumber(user.getPhoneNumber());
+                UserValidator.doesPhoneNumberExist(user, userToValidate.get());
+            } catch (EntityNotFoundException e) {
+            }
         }
     }
 }

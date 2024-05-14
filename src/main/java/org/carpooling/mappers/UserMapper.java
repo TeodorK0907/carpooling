@@ -15,13 +15,13 @@ public class UserMapper {
     private final RatingService ratingService;
 
     @Autowired
-    public UserMapper (UserService userService,
-                       RatingService ratingService) {
+    public UserMapper(UserService userService,
+                      RatingService ratingService) {
         this.userService = userService;
         this.ratingService = ratingService;
     }
 
-    public User toObj (UserDto dto) {
+    public User toObj(UserDto dto) {
         User user = new User();
         populateUserObj(user, dto);
         return user;
@@ -51,4 +51,5 @@ public class UserMapper {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setEmail(dto.getEmail());
     }
+
 }

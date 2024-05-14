@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import org.carpooling.helpers.constants.TravelStatus;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -98,5 +97,19 @@ public class Travel {
         this.status = status;
     }
 
+    public Set<Passenger> getPassengers() {
+        return passengers;
+    }
 
+    public void setPassengers(Set<Passenger> passengers) {
+        this.passengers = passengers;
+    }
+
+    public Set<Candidate> getCandidates() {
+        return candidates;
+    }
+
+    public void setCandidates(Set<Candidate> candidates) {
+        this.candidates = candidates;
+    }
 }

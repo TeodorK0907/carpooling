@@ -1,6 +1,22 @@
 package org.carpooling.helpers.errors;
 
-public class AuthenticationErrors {
-    public static final String FAILED_AUTH = "The requested resource requires authentication.";
-    public static final String AUTH_DETAILS_MISMATCH = "Incorrect username or password.";
+public enum AuthenticationErrors {
+    AUTH_FAILED("The requested resource requires authentication."),
+
+    AUTH_DETAILS_MISMATCH("Incorrect username or password.");
+
+    private final String description;
+
+    AuthenticationErrors(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public String toString() {
+        return description;
+    }
 }
