@@ -2,7 +2,6 @@ package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
-import org.carpooling.helpers.constants.attribute_constants.UserAttribute;
 import org.carpooling.helpers.model_filters.UserFilterOptions;
 import org.carpooling.helpers.validators.UserFilterValidator;
 import org.carpooling.helpers.validators.UserValidator;
@@ -10,6 +9,7 @@ import org.carpooling.models.User;
 import org.carpooling.repositories.UserRepository;
 import org.carpooling.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import static org.carpooling.helpers.constants.ModelNames.USER;
@@ -28,20 +28,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll(User authUser, UserFilterOptions filter) {
+    public Page<User> getAll(User authUser, UserFilterOptions filter) {
         UserValidator.isAdmin(authUser);
-        List<User> users;
-        if (UserFilterValidator.isFilterEmpty(filter)) {
-            users = userRepository.findAllByArchivedIsFalse();
-        } else {
-            users = userRepository
-                    .findAllByArchivedIsFalseAndUsernameLikeOrEmailLikeOrPhoneNumberLike(
-                            UserFilterValidator.isFilterEmpty(filter.getUsername()),
-                            UserFilterValidator.isFilterEmpty(filter.getEmail()),
-                            UserFilterValidator.isFilterEmpty(filter.getPhoneNumber())
-                    );
-        }
-        UserValidator.validateIfUserListIsEmpty(users);
+        Page<User> users;
+        Pageable page = PageRequest.of(0, 10);
+
+        users = userRepository
+                .findAllWithFilter(
+                        String.format("%%%s%%", filter.getUsername().orElse("")),
+                        String.format("%%%s%%", filter.getEmail().orElse("")),
+                        String.format("%%%s%%", filter.getPhoneNumber().orElse("")),
+                        page
+                );
+
+        UserValidator.isUserListEmpty(users);
         return users;
     }
 
@@ -76,6 +76,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return user;
     }
+
     //todo remove below magic String
     @Override
     public User update(User authUser, User user) {
@@ -117,27 +118,27 @@ public class UserServiceImpl implements UserService {
     }
 
     private void doesUserDataAlreadyExist(User user) {
-        Optional<User> userToValidate;
+        User userToValidate;
         boolean isUsernameDuplicated = true;
         boolean isEmailDuplicated = true;
         try {
-            userToValidate = userRepository.findUserByUsername(user.getUsername());
-            UserValidator.doesUsernameExist(user, userToValidate.get());
+            userToValidate = getByUsername(user.getUsername());
+            UserValidator.doesUsernameExist(user, userToValidate);
         } catch (EntityNotFoundException e) {
             isUsernameDuplicated = false;
         }
         if (!isUsernameDuplicated) {
             try {
-                userToValidate = userRepository.findUserByEmail(user.getEmail());
-                UserValidator.doesEmailExist(user, userToValidate.get());
+                userToValidate = getByEmail(user.getEmail());
+                UserValidator.doesEmailExist(user, userToValidate);
             } catch (EntityNotFoundException e) {
                 isEmailDuplicated = false;
             }
         }
         if (!isEmailDuplicated) {
             try {
-                userToValidate = userRepository.findUserByPhoneNumber(user.getPhoneNumber());
-                UserValidator.doesPhoneNumberExist(user, userToValidate.get());
+                userToValidate = getByPhoneNumber(user.getPhoneNumber());
+                UserValidator.doesPhoneNumberExist(user, userToValidate);
             } catch (EntityNotFoundException e) {
             }
         }

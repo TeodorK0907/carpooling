@@ -12,6 +12,8 @@ import org.carpooling.models.input_dto.UserDto;
 import org.carpooling.security.AuthenticationManager;
 import org.carpooling.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +39,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<Page<User>> getAllUsers(@RequestHeader HttpHeaders headers,
                                                   @RequestParam(required = false) String username,
                                                   @RequestParam(required = false) String email,
                                                   @RequestParam(required = false) String phone_number) {
         try {
             User authenticatedUser = authManager.fetchUser(headers);
             UserFilterOptions filter = new UserFilterOptions(username, email, phone_number);
-            List<User> result = userService.getAll(authenticatedUser, filter);
+            Page<User> result = userService.getAll(authenticatedUser, filter);
             return ResponseEntity.ok().body(result);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
