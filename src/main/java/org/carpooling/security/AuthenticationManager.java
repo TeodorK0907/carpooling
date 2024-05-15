@@ -46,7 +46,7 @@ public class AuthenticationManager {
         if (firstIntervalIndex == -1) {
             throw new UnauthenticatedRequestException(AuthenticationErrors.AUTH_FAILED.toString());
         }
-        return authHeader.substring(firstIntervalIndex, + 1);
+        return authHeader.substring(firstIntervalIndex + 1);
     }
 
     private String getUsername(String authHeader) {

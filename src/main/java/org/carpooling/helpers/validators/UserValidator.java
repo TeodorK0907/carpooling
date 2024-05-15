@@ -5,6 +5,7 @@ import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
 import org.carpooling.helpers.constants.UserRole;
 import org.carpooling.models.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,8 @@ import static org.carpooling.helpers.constants.ModelNames.USER;
 import static org.carpooling.helpers.constants.attribute_constants.UserAttribute.*;
 
 public class UserValidator {
+
+    //todo consider optimization for boolean method to take more params, but be a single method for every attribute
     public static boolean doesUsernameExist(User existing, User toBeCreated) {
         if ((existing.getUsername().equals(toBeCreated.getUsername()))
                 && isIdDifferent(existing, toBeCreated)) {
@@ -45,10 +48,11 @@ public class UserValidator {
         }
     }
 
-    public static void validateIfUserListIsEmpty(List<User> list) {
-        if (list.isEmpty()) {
-            throw new EntityNotFoundException("There are no active users");
+    public static boolean isUserListEmpty(Page<User> list) {
+        if (list.getContent().isEmpty()) {
+            throw new EntityNotFoundException("No users were found.");
         }
+        return false;
     }
 
     public static boolean validateIfUserIsEmpty(Optional<User> userToValidate) {
@@ -58,7 +62,7 @@ public class UserValidator {
     public static boolean isIdDifferent(User existing, User fromDB) {
         return existing.getId() != fromDB.getId();
     }
-
+        //todo add below magic String to authorizationEnum
     public static boolean isAdmin(User user) {
         if (!user.getRole().equals(UserRole.ADMIN)){
             throw new UnauthorizedOperationException("You are unauthorized to perform the required action");

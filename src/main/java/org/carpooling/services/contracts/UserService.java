@@ -2,11 +2,12 @@ package org.carpooling.services.contracts;
 
 import org.carpooling.helpers.model_filters.UserFilterOptions;
 import org.carpooling.models.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> getAll(User authenticatedUser, UserFilterOptions filter);
+    Page<User> getAll(User authenticatedUser, UserFilterOptions filter);
 
     User getById(int userId);
 
