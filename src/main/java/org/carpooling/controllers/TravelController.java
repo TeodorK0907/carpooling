@@ -12,6 +12,7 @@ import org.carpooling.models.input_dto.TravelDto;
 import org.carpooling.security.AuthenticationManager;
 import org.carpooling.services.contracts.TravelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class TravelController {
 
     //todo implement pagination
     @GetMapping
-    public ResponseEntity<List<Travel>> getAllTravels(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<Page<Travel>> getAllTravels(@RequestHeader HttpHeaders headers,
                                                       @RequestParam(required = false) String startLocation,
                                                       @RequestParam(required = false) String endLocation,
                                                       @RequestParam(required = false) String driver,
@@ -58,7 +59,7 @@ public class TravelController {
             TravelFilterOptions travelFilter = new TravelFilterOptions(
                     startLocation, endLocation, driver, departAfter, departBefore, freeSpots
             );
-            List<Travel> result = travelService.getAll(authenticatedUser, travelFilter);
+            Page<Travel> result = travelService.getAll(authenticatedUser, travelFilter);
             return ResponseEntity.ok().body(result);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
