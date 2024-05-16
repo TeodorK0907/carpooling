@@ -69,4 +69,11 @@ public class UserValidator {
         }
         return true;
     }
+
+    public static boolean isBlocked(User user) {
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException("You are unauthorized to perform the required action");
+        }
+        return false;
+    }
 }
