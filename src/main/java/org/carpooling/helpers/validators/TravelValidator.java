@@ -5,15 +5,16 @@ import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
 import org.carpooling.helpers.constants.TravelStatus;
 import org.carpooling.models.Travel;
+import org.carpooling.models.TravelPoint;
 import org.carpooling.models.User;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public class TravelValidator {
 
     //todo remove below magic String
-    public static boolean isTravelListEmpty(List<Travel> list) {
-        if (list.isEmpty()) {
+    public static boolean isTravelListEmpty(Page<Travel> list) {
+        if (list.getContent().isEmpty()) {
             throw new EntityNotFoundException("No planned travels were found.");
         }
         return false;
@@ -42,5 +43,9 @@ public class TravelValidator {
             default:
                 throw new BadRequestException("Only an active or planned travel could be cancelled.");
         }
+    }
+
+    public static boolean isLatLongEmpty(TravelPoint startingPoint) {
+        return startingPoint.getLatitude() == null && startingPoint.getLongitude() == null;
     }
 }
