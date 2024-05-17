@@ -2,7 +2,10 @@ package org.carpooling.services;
 
 import org.carpooling.clients.BingMapsClient;
 import org.carpooling.exceptions.EntityNotFoundException;
+import org.carpooling.exceptions.UnsuccessfulResponseException;
 import org.carpooling.helpers.constants.ModelNames;
+import org.carpooling.helpers.constants.attribute_constants.TravelPointAttributes;
+import org.carpooling.helpers.constants.bing_maps_client.BingMapsClientStatus;
 import org.carpooling.models.TravelPoint;
 import org.carpooling.repositories.PointRepository;
 import org.carpooling.services.contracts.TravelPointService;
@@ -11,56 +14,73 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static org.carpooling.helpers.constants.BingMapsClient.*;
+import static org.carpooling.helpers.constants.bing_maps_client.BingMapsClientKey.*;
+import static org.carpooling.helpers.constants.bing_maps_client.BingMapsClientValue.COORDINATES;
+import static org.carpooling.helpers.constants.bing_maps_client.BingMapsClientValue.ROUTE;
 
 @Service
 public class TravelPointServiceImpl implements TravelPointService {
+    private static final int FIRST_INDEX = 0;
+    private static final int SECOND_INDEX = 0;
+    public static final String DELIMITER = ",";
+    private static final String REPLACEMENT = "/";
     private final BingMapsClient client;
-    private final PointRepository pointRepo;
+    private final PointRepository pointRepository;
 
     @Autowired
     public TravelPointServiceImpl(BingMapsClient client,
-                                  PointRepository pointRepo) {
+                                  PointRepository pointRepository) {
         this.client = client;
-        this.pointRepo = pointRepo;
+        this.pointRepository = pointRepository;
     }
 
     @Override
     public TravelPoint getByAddress(String address) {
-        return pointRepo.findByAddress(address)
-                .orElseThrow(() -> new EntityNotFoundException(ModelNames.TRAVEL_POINT.toString(), "address", address));
+        return pointRepository.findByAddress(address)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        ModelNames.TRAVEL_POINT.toString(),
+                        TravelPointAttributes.ADDRESS.toString(), address)
+                );
     }
-    //todo make LatLong method more readable
+
     @Override
-    public TravelPoint getLatLong(TravelPoint point) {
+    public TravelPoint getCoordinates(TravelPoint point) {
         StringBuilder location = new StringBuilder("/Locations/BG/");
         populateLocation(location, point.getAddress());
         JSONObject responseJson = new JSONObject(client.getLocationResponse(location));
-        if (responseJson.getInt(STATUS_CODE_KEY.toString()) == 200){
-            JSONArray resourceSets = responseJson.getJSONArray(RESOURCE_SET_KEY.toString());
-            JSONObject resources = resourceSets.getJSONObject(0);
-            JSONArray resourceArr = resources.getJSONArray(RESOURSES_KEY.toString());
-            JSONObject resourceMap = resourceArr.getJSONObject(0);
-            JSONArray geocodePoints = resourceMap.getJSONArray(GEOCODE_POINTS_KEY.toString());
-            populatePoint(point, geocodePoints);
+        if (responseJson.getInt(
+                STATUS_CODE.toString()) == BingMapsClientStatus.STATUS_CODE_KEY.getCode()
+        ) {
+            JSONArray geoCodePoints = getGeocodePoints(responseJson);
+            populatePoint(point, geoCodePoints);
+            pointRepository.save(point);
+            return point;
         }
-        return null;
-    }
-
-    private void populatePoint(TravelPoint point, JSONArray geocodePoints) {
-        for (int i = 0; i < geocodePoints.length(); i++) {
-            JSONObject geoPoint = geocodePoints.getJSONObject(i);
-            if (geoPoint
-                    .getJSONArray(USAGE_TYPE_KEY.toString())
-                    .getString(0).equals(ROUTE_VALUE.toString())) {
-                JSONArray coordinates = geoPoint.getJSONArray(COORDINATES_VALUE.toString());
-                point.setLatitude(coordinates.getDouble(0));
-                point.setLongitude(coordinates.getDouble(1));
-            }
-        }
+        throw new UnsuccessfulResponseException("The request could not be processed.");
     }
 
     private void populateLocation(StringBuilder location, String address) {
-        location.append(address.replaceAll(",", "/"));
+        location.append(address.replaceAll(DELIMITER, REPLACEMENT));
+    }
+
+    private JSONArray getGeocodePoints(JSONObject responseJson) {
+        JSONArray resourceSets = responseJson.getJSONArray(RESOURCE_SET.toString());
+        JSONObject resources = resourceSets.getJSONObject(FIRST_INDEX);
+        JSONArray resourceArr = resources.getJSONArray(RESOURCES.toString());
+        JSONObject resourceMap = resourceArr.getJSONObject(FIRST_INDEX);
+        return resourceMap.getJSONArray(GEOCODE_POINTS.toString());
+    }
+
+    private void populatePoint(TravelPoint point, JSONArray geocodePoints) {
+        for (int i = FIRST_INDEX; i < geocodePoints.length(); i++) {
+            JSONObject geoPoint = geocodePoints.getJSONObject(i);
+            if (geoPoint
+                    .getJSONArray(USAGE_TYPES.toString())
+                    .getString(FIRST_INDEX).equals(ROUTE.toString())) {
+                JSONArray coordinates = geoPoint.getJSONArray(COORDINATES.toString());
+                point.setLatitude(coordinates.getDouble(FIRST_INDEX));
+                point.setLongitude(coordinates.getDouble(SECOND_INDEX));
+            }
+        }
     }
 }

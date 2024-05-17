@@ -1,9 +1,6 @@
 package org.carpooling.controllers;
 
-import org.carpooling.exceptions.BadRequestException;
-import org.carpooling.exceptions.EntityNotFoundException;
-import org.carpooling.exceptions.UnauthenticatedRequestException;
-import org.carpooling.exceptions.UnauthorizedOperationException;
+import org.carpooling.exceptions.*;
 import org.carpooling.helpers.model_filters.TravelFilterOptions;
 import org.carpooling.mappers.TravelMapper;
 import org.carpooling.models.Travel;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/travels")
@@ -40,7 +36,6 @@ public class TravelController {
         this.travelMapper = travelMapper;
     }
 
-    //todo implement pagination
     @GetMapping
     public ResponseEntity<Page<Travel>> getAllTravels(@RequestHeader HttpHeaders headers,
                                                       @RequestParam(required = false) String startLocation,
@@ -97,6 +92,8 @@ public class TravelController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (BadRequestException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (UnsuccessfulResponseException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
