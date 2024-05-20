@@ -6,7 +6,8 @@ public enum ModelNames {
     TRAVEL_POINT("travel point"),
     CANDIDATE("candidate"),
     PASSENGER("passenger"),
-    RATING("rating");
+    RATING("rating"),
+    COMMENT("comment");
 
     private final String description;
 

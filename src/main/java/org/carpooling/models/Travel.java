@@ -30,6 +30,10 @@ public class Travel {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "travel_status_id")
     private TravelStatus status;
+    @Column(name = "duration")
+    private Double duration;
+    @Column(name = "distance")
+    private Double distance;
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "passenger_id")
     private Set<Passenger> passengers;
@@ -95,6 +99,22 @@ public class Travel {
 
     public void setStatus(TravelStatus status) {
         this.status = status;
+    }
+
+    public Double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Double duration) {
+        this.duration = duration;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 
     public Set<Passenger> getPassengers() {
