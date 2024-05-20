@@ -5,6 +5,6 @@ import org.carpooling.models.TravelPoint;
 public interface TravelPointService {
     TravelPoint getByAddress(String address);
 
-    TravelPoint getLatLong(TravelPoint point);
+    TravelPoint getCoordinates(TravelPoint point);
 
 }
