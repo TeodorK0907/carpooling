@@ -9,7 +9,10 @@ public enum BingMapsClientKey {
     RESOURCE_SET("resourceSets"),
     RESOURCES("resources"),
     GEOCODE_POINTS("geocodePoints"),
-    USAGE_TYPES("usageTypes");
+    USAGE_TYPES("usageTypes"),
+    RESULTS("results"),
+    TRAVEL_DISTANCE("travelDistance"),
+    TRAVEL_DURATION("travelDuration");
 
     private final String description;
 
