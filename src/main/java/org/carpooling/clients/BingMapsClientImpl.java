@@ -34,16 +34,13 @@ public class BingMapsClientImpl implements BingMapsClient {
     }
 
     @Override
-    public String getDistanceMatrixResponse(TravelPoint origins, TravelPoint destinations) {
-
-
-
+    public String getDistanceMatrixResponse(StringBuilder origins, StringBuilder destinations) {
         return client.create()
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BingMapsClientEndpoint.DISTANCE_MATRIX.toString())
-                        .queryParam(BingMapsClientKey.ORIGINS.toString(), originsLatLong.toString())
-                        .queryParam(BingMapsClientKey.DESTINATIONS.toString(), destinationsLatLong.toString())
+                        .queryParam(BingMapsClientKey.ORIGINS.toString(), origins.toString())
+                        .queryParam(BingMapsClientKey.DESTINATIONS.toString(), destinations.toString())
                         .queryParam(BingMapsClientKey.TRAVEL_MODE.toString(), BingMapsClientValue.DRIVING.toString())
                         .queryParam(BingMapsClientKey.KEY.toString(), key)
                         .build())
