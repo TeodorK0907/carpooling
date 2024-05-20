@@ -10,12 +10,6 @@ CREATE TABLE travel_statuses
     status_name varchar(20) not null
 );
 
-CREATE TABLE comments
-(
-    comment_id serial primary key,
-    content    varchar(250) not null
-);
-
 CREATE TABLE feedbacks
 (
     feedback_id     serial primary key,
@@ -88,13 +82,15 @@ CREATE TABLE points
 CREATE TABLE travels
 (
     travel_id        serial primary key,
-    created_by       int  not null,
-    starting_point   int  not null,
-    ending_point     int  not null,
-    departure_time   time not null,
-    free_spots       int  not null,
+    created_by       int              not null,
+    starting_point   int              not null,
+    ending_point     int              not null,
+    departure_time   time             not null,
+    free_spots       int              not null,
 --     comment_id       int,
-    travel_status_id int  not null,
+    travel_status_id int              not null,
+    duration         double precision not null,
+    distance         double precision not null,
     constraint travels_users_created_by_fk
         foreign key (created_by) references users (user_id),
     constraint travels_points_starting_point_id_fk
@@ -105,6 +101,16 @@ CREATE TABLE travels
 --         foreign key (comment_id) references comments (comment_id),
     constraint travels_travel_statuses_travel_status_id_fk
         foreign key (travel_status_id) references travel_statuses (status_id)
+);
+--todo consider if comment needs to have travelId as a foreign key or not
+CREATE TABLE comments
+(
+    comment_id serial primary key,
+    travel_id  int          not null,
+    content    varchar(250) not null,
+    constraint comments_travels_travel_id_fk
+        foreign key (travel_id) references travels (travel_id)
+            on delete cascade
 );
 
 CREATE TABLE travel_candidates
