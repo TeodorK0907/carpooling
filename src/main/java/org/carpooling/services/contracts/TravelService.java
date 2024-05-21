@@ -11,7 +11,7 @@ public interface TravelService {
 
     Travel getById(int travelId);
 
-    Travel create(User creator, Travel travel);
+    Travel create(User creator, Travel travel, String commentContent);
 
     Travel complete(User authenticatedUser, int travelId);
 
