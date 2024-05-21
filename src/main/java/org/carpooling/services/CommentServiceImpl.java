@@ -40,10 +40,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void create(String content) {
+    public void create(String content, int travelId) {
         if (!CommentValidator.isContentEmpty(content)) {
             Comment comment = new Comment();
             comment.setContent(content);
+            comment.setTravel_id(travelId);
             commentRepository.save(comment);
         }
     }
