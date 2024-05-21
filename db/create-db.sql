@@ -6,7 +6,7 @@ CREATE TABLE roles
 
 CREATE TABLE travel_statuses
 (
-    status_id   serial primary key,
+    status_id   int primary key,
     status_name varchar(20) not null
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE points
 --     constraint points_addresses_address_fk
 --         foreign key (address) references addresses (address_id)
 );
---todo to test out with comment as a separate entity first before making it a part of a travel entity
+
 CREATE TABLE travels
 (
     travel_id        serial primary key,
@@ -96,11 +96,9 @@ CREATE TABLE travels
     constraint travels_points_starting_point_id_fk
         foreign key (starting_point) references points (point_id),
     constraint travels_points_ending_point_id_fk
-        foreign key (ending_point) references points (point_id),
+        foreign key (ending_point) references points (point_id)
 --     constraint travels_comments_comment_id_fk
 --         foreign key (comment_id) references comments (comment_id),
-    constraint travels_travel_statuses_travel_status_id_fk
-        foreign key (travel_status_id) references travel_statuses (status_id)
 );
 --todo consider if comment needs to have travelId as a foreign key or not
 CREATE TABLE comments
