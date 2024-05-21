@@ -8,7 +8,7 @@ public interface CommentService {
 
     Comment getByTravelId(int travelId);
 
-    void create(String content);
+    void create(String content, int travelId);
 
     void update(String content, int travelId);
 

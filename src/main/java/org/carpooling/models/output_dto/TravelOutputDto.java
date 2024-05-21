@@ -1,7 +1,5 @@
 package org.carpooling.models.output_dto;
 
-import org.carpooling.helpers.constants.TravelStatus;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -12,7 +10,7 @@ public class TravelOutputDto {
     private String endingPoint;
     private LocalDateTime departureTime;
     private int freeSpots;
-    private TravelStatus status;
+    private String status;
     private Double duration;
     private Double distance;
     private String comment;
@@ -69,11 +67,11 @@ public class TravelOutputDto {
         this.freeSpots = freeSpots;
     }
 
-    public TravelStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(TravelStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

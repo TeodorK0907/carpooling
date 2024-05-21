@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class DateTimeMapper {
-    private static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT);
     public DateTimeMapper() {
 

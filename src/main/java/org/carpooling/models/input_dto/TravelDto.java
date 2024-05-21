@@ -3,7 +3,6 @@ package org.carpooling.models.input_dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.carpooling.helpers.errors.InputErrors;
 import org.carpooling.helpers.errors.TravelDtoErrors;
 
@@ -12,12 +11,11 @@ public class TravelDto {
     private String startingPoint;
     @NotEmpty(message = InputErrors.FIELD_EMPTY)
     private String endPoint;
-    @NotEmpty(message = InputErrors.FIELD_EMPTY)
-    @Size(min = 16, message = TravelDtoErrors.TIME)
+    @NotNull(message = InputErrors.FIELD_EMPTY)
     private String departureTime;
-    @NotNull
+    @NotNull(message = InputErrors.FIELD_EMPTY)
     @Min(value = 1, message = TravelDtoErrors.FREE_SPOTS)
-    private int freeSpots;
+    private Integer freeSpots;
     private String comment;
 
     public TravelDto() {
@@ -47,11 +45,11 @@ public class TravelDto {
         this.departureTime = departureTime;
     }
 
-    public int getFreeSpots() {
+    public Integer getFreeSpots() {
         return freeSpots;
     }
 
-    public void setFreeSpots(int freeSpots) {
+    public void setFreeSpots(Integer freeSpots) {
         this.freeSpots = freeSpots;
     }
 
