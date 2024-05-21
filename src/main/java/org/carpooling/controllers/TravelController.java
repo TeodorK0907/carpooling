@@ -1,11 +1,13 @@
 package org.carpooling.controllers;
 
+import jakarta.validation.Valid;
 import org.carpooling.exceptions.*;
 import org.carpooling.helpers.model_filters.TravelFilterOptions;
 import org.carpooling.mappers.TravelMapper;
 import org.carpooling.models.Travel;
 import org.carpooling.models.User;
 import org.carpooling.models.input_dto.TravelDto;
+import org.carpooling.models.output_dto.TravelOutputDto;
 import org.carpooling.security.AuthenticationManager;
 import org.carpooling.services.contracts.TravelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,15 +79,15 @@ public class TravelController {
         }
     }
 
-    //todo check comment logic
     @PostMapping
-    public ResponseEntity<Travel> createTravel(@RequestHeader HttpHeaders headers,
-                                               @RequestBody TravelDto dto) {
+    public ResponseEntity<TravelOutputDto> createTravel(@RequestHeader HttpHeaders headers,
+                                               @Valid @RequestBody TravelDto dto) {
         try {
             User authUser = authManager.fetchUser(headers);
             Travel travel = travelMapper.toObj(authUser, dto);
-            travelService.create(authUser, travel);
-            return ResponseEntity.ok().body(travel);
+            travelService.create(authUser, travel, dto.getComment());
+            TravelOutputDto output = travelMapper.toDto(travel);
+            return ResponseEntity.ok().body(output);
         } catch (UnauthenticatedRequestException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedOperationException e) {
