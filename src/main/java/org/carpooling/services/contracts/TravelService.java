@@ -17,9 +17,9 @@ public interface TravelService {
 
     Travel cancel(User authenticatedUser, int travelId);
 
-    Travel apply(User authenticatedUser, int travelId);
+    void apply(User authenticatedUser, int travelId);
 
-    Travel resign(User authenticatedUser, int travelId);
+    void resign(User authenticatedUser, int travelId);
 
     Travel approve(User authenticatedUser, int travelId, int candidateId);
 

@@ -3,10 +3,12 @@ package org.carpooling.helpers.validators;
 import org.carpooling.exceptions.BadRequestException;
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
+import org.carpooling.helpers.constants.ModelNames;
 import org.carpooling.helpers.constants.TravelStatus;
-import org.carpooling.models.Travel;
-import org.carpooling.models.TravelPoint;
-import org.carpooling.models.User;
+import org.carpooling.helpers.constants.attribute_constants.CandidateAttributes;
+import org.carpooling.helpers.constants.attribute_constants.PassengerAttributes;
+import org.carpooling.helpers.constants.attribute_constants.TravelAttributes;
+import org.carpooling.models.*;
 import org.springframework.data.domain.Page;
 
 
@@ -47,5 +49,19 @@ public class TravelValidator {
 
     public static boolean isLatLongEmpty(TravelPoint startingPoint) {
         return startingPoint.getLatitude() == null && startingPoint.getLongitude() == null;
+    }
+
+    public static boolean isPassengerInTravel(Travel travel, Passenger passengerToResign) {
+        if (!travel.getPassengers().contains(passengerToResign)) {
+            throw new EntityNotFoundException(
+                    ModelNames.PASSENGER.toString(),
+                    PassengerAttributes.USER_ID.toString(),
+                    String.valueOf(passengerToResign.getUserId()),
+                    ModelNames.TRAVEL.toString(),
+                    TravelAttributes.ID.toString(),
+                    String.valueOf(travel.getId())
+                    );
+        }
+        return true;
     }
 }

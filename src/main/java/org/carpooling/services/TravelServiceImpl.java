@@ -10,13 +10,9 @@ import org.carpooling.helpers.model_filters.TravelFilterOptions;
 import org.carpooling.helpers.validators.BingMapsClientValidator;
 import org.carpooling.helpers.validators.TravelValidator;
 import org.carpooling.helpers.validators.UserValidator;
-import org.carpooling.models.Travel;
-import org.carpooling.models.TravelPoint;
-import org.carpooling.models.User;
+import org.carpooling.models.*;
 import org.carpooling.repositories.TravelRepository;
-import org.carpooling.services.contracts.CommentService;
-import org.carpooling.services.contracts.TravelPointService;
-import org.carpooling.services.contracts.TravelService;
+import org.carpooling.services.contracts.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +31,22 @@ public class TravelServiceImpl implements TravelService {
     private final TravelRepository travelRepository;
     private final TravelPointService pointService;
     private final CommentService commentService;
+    private final CandidateService candidateService;
+    private final PassengerService passengerService;
     private final BingMapsClient client;
 
     @Autowired
     public TravelServiceImpl(TravelRepository travelRepository,
                              TravelPointService pointService,
                              CommentService commentService,
+                             CandidateService candidateService,
+                             PassengerService passengerService,
                              BingMapsClient client) {
         this.travelRepository = travelRepository;
         this.pointService = pointService;
         this.commentService = commentService;
+        this.candidateService = candidateService;
+        this.passengerService = passengerService;
         this.client = client;
     }
 
@@ -120,19 +122,24 @@ public class TravelServiceImpl implements TravelService {
         return toBeMarkedCancelled;
     }
 
-    //todo create candidate service and repo
     @Override
-    public Travel apply(User authenticatedUser, int travelId) {
+    public void apply(User authenticatedUser, int travelId) {
         UserValidator.isBlocked(authenticatedUser);
-
+        Candidate candidateToApply = candidateService.create(authenticatedUser);
         Travel travelToApply = getById(travelId);
-        //travelToApply.getCandidates().add()
-        return null;
+        travelToApply.getCandidates().add(candidateToApply);
+        travelRepository.save(travelToApply);
     }
 
     @Override
-    public Travel resign(User authenticatedUser, int travelId) {
-        return null;
+    public void resign(User authenticatedUser, int travelId) {
+        Passenger passengerToResign = passengerService
+                .getByUserId(authenticatedUser.getId());
+        Travel travel = getById(travelId);
+        if (TravelValidator.isPassengerInTravel(travel, passengerToResign)) {
+            travel.getPassengers().remove(passengerToResign);
+            travelRepository.save(travel);
+        }
     }
 
     @Override

@@ -44,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
         if (!CommentValidator.isContentEmpty(content)) {
             Comment comment = new Comment();
             comment.setContent(content);
-            comment.setTravel_id(travelId);
+            comment.setTravelId(travelId);
             commentRepository.save(comment);
         }
     }
