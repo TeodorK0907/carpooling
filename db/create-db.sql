@@ -114,19 +114,19 @@ CREATE TABLE comments
 CREATE TABLE travel_candidates
 (
     travel_id int not null,
-    user_id   int not null,
+    candidate_id   int not null,
     constraint travel_candidates_travels_travel_id_fk
         foreign key (travel_id) references travels (travel_id) on delete cascade,
-    constraint travel_candidates_travels_user_id_fk
-        foreign key (user_id) references users (user_id) on delete cascade
+    constraint travel_candidates_travels_candidate_id_fk
+        foreign key (candidate_id) references candidates (candidate_id) on delete cascade
 );
 
 CREATE TABLE travel_passengers
 (
     travel_id int not null,
-    user_id   int not null,
+    passenger_id   int not null,
     constraint travel_candidates_travels_travel_id_fk
         foreign key (travel_id) references travels (travel_id) on delete cascade,
-    constraint travel_candidates_travels_user_id_fk
-        foreign key (user_id) references users (user_id) on delete cascade
+    constraint travel_candidates_travels_passenger_id_fk
+        foreign key (passenger_id) references passengers (passenger_id) on delete cascade
 );
