@@ -4,9 +4,11 @@ import org.carpooling.models.Candidate;
 import org.carpooling.models.User;
 
 public interface CandidateService {
-    Candidate create(User user);
+    Candidate apply(User user, Candidate candidate, int travelId);
 
-    Candidate getByUserId(int userId);
+    Candidate getById(int candidateId);
 
-    void delete(Candidate candidate);
+    Candidate getByUserIdAndTravelId(int userId, int travelId);
+
+    void resign(User user, int travelId);
 }

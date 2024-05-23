@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "candidates", schema = "rose-valley-travel")
 public class Candidate {
     @Id
@@ -13,8 +14,10 @@ public class Candidate {
     @Column(name = "candidate_id")
     private int id;
     @JsonIgnore
-    @JoinColumn(name = "user_id")
+    @Column(name = "user_id")
     private int userId;
+    @Column(name = "travel_id")
+    private int travelId;
     @Column(name = "username")
     private String username;
 
@@ -37,6 +40,14 @@ public class Candidate {
         this.userId = userId;
     }
 
+    public int getTravelId() {
+        return travelId;
+    }
+
+    public void setTravelId(int travelId) {
+        this.travelId = travelId;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -51,11 +62,12 @@ public class Candidate {
         if (!(o instanceof Candidate candidate)) return false;
         return id == candidate.id
                 && userId == candidate.userId
+                && travelId == candidate.travelId
                 && Objects.equals(username, candidate.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, username);
+        return Objects.hash(id, userId, travelId, username);
     }
 }

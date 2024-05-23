@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface PassengerRepository extends JpaRepository<Passenger, Integer> {
-    Optional<Passenger> findByUserId(int userId);
+    Optional<Passenger> findByUserIdAndTravelId(int userId, int TravelId);
 }

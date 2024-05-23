@@ -50,6 +50,7 @@ CREATE TABLE passengers
     passenger_id serial primary key,
     user_id      int         not null,
     username     varchar(20) not null,
+    travel_id    int         not null,
     gave_rating  boolean default false,
     given_rating boolean default false
 );
@@ -58,6 +59,7 @@ CREATE TABLE candidates
 (
     candidate_id serial primary key,
     user_id      int         not null,
+    travel_id    int         not null,
     username     varchar(20) not null
 );
 
@@ -113,8 +115,8 @@ CREATE TABLE comments
 
 CREATE TABLE travel_candidates
 (
-    travel_id int not null,
-    candidate_id   int not null,
+    travel_id    int not null,
+    candidate_id int not null,
     constraint travel_candidates_travels_travel_id_fk
         foreign key (travel_id) references travels (travel_id) on delete cascade,
     constraint travel_candidates_travels_candidate_id_fk
@@ -123,8 +125,8 @@ CREATE TABLE travel_candidates
 
 CREATE TABLE travel_passengers
 (
-    travel_id int not null,
-    passenger_id   int not null,
+    travel_id    int not null,
+    passenger_id int not null,
     constraint travel_candidates_travels_travel_id_fk
         foreign key (travel_id) references travels (travel_id) on delete cascade,
     constraint travel_candidates_travels_passenger_id_fk
