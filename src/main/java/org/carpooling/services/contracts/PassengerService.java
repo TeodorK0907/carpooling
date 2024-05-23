@@ -4,9 +4,11 @@ import org.carpooling.models.Passenger;
 import org.carpooling.models.User;
 
 public interface PassengerService {
-    Passenger create(User user);
+    Passenger approve(User user, Passenger passenger, int travelId);
 
-    Passenger getByUserId(int userId);
+    Passenger getById(int passengerId);
 
-    void delete(Passenger passenger);
+    Passenger getByUserAndTravelId(int userId, int travelId);
+
+    void decline(User user, int passengerId, int travelId);
 }
