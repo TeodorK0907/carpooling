@@ -13,17 +13,11 @@ public interface TravelService {
 
     Travel create(User creator, Travel travel, String commentContent);
 
+    void update(Travel travel);
+
     Travel complete(User authenticatedUser, int travelId);
 
     Travel cancel(User authenticatedUser, int travelId);
-
-    void apply(User authenticatedUser, int travelId);
-
-    void resign(User authenticatedUser, int travelId);
-
-    Travel approve(User authenticatedUser, int travelId, int candidateId);
-
-    Travel decline(User authenticatedUser, int travelId, int candidateId);
 
     void delete(User authenticatedUser, int travelId);
 }

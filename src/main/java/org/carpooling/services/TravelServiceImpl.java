@@ -31,26 +31,20 @@ public class TravelServiceImpl implements TravelService {
     private final TravelRepository travelRepository;
     private final TravelPointService pointService;
     private final CommentService commentService;
-    private final CandidateService candidateService;
-    private final PassengerService passengerService;
     private final BingMapsClient client;
 
     @Autowired
     public TravelServiceImpl(TravelRepository travelRepository,
                              TravelPointService pointService,
                              CommentService commentService,
-                             CandidateService candidateService,
-                             PassengerService passengerService,
                              BingMapsClient client) {
         this.travelRepository = travelRepository;
         this.pointService = pointService;
         this.commentService = commentService;
-        this.candidateService = candidateService;
-        this.passengerService = passengerService;
         this.client = client;
     }
 
-    //todo test getAll once travels can be created
+    //todo create default params for both pageNum and pageSize
     @Override
     public Page<Travel> getAll(User authenticatedUser, TravelFilterOptions filter) {
         Page<Travel> travels;
@@ -100,7 +94,13 @@ public class TravelServiceImpl implements TravelService {
             commentService.create(commentContent, travel.getId());
             return travel;
         }
+        //todo remove below magic String
         throw new UnsuccessfulResponseException("The request could not be processed.");
+    }
+
+    @Override
+    public void update(Travel travel) {
+        travelRepository.save(travel);
     }
 
     @Override
@@ -122,36 +122,7 @@ public class TravelServiceImpl implements TravelService {
         return toBeMarkedCancelled;
     }
 
-    @Override
-    public void apply(User authenticatedUser, int travelId) {
-        UserValidator.isBlocked(authenticatedUser);
-        Candidate candidateToApply = candidateService.create(authenticatedUser);
-        Travel travelToApply = getById(travelId);
-        travelToApply.getCandidates().add(candidateToApply);
-        travelRepository.save(travelToApply);
-    }
-
-    @Override
-    public void resign(User authenticatedUser, int travelId) {
-        Passenger passengerToResign = passengerService
-                .getByUserId(authenticatedUser.getId());
-        Travel travel = getById(travelId);
-        if (TravelValidator.isPassengerInTravel(travel, passengerToResign)) {
-            travel.getPassengers().remove(passengerToResign);
-            travelRepository.save(travel);
-        }
-    }
-
-    @Override
-    public Travel approve(User authenticatedUser, int travelId, int candidateId) {
-        return null;
-    }
-
-    @Override
-    public Travel decline(User authenticatedUser, int travelId, int candidateId) {
-        return null;
-    }
-
+    //todo finish below method
     @Override
     public void delete(User authenticatedUser, int travelId) {
 
