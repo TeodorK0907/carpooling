@@ -10,5 +10,7 @@ public interface CandidateService {
 
     Candidate getByUserIdAndTravelId(int userId, int travelId);
 
-    void resign(User user, int travelId);
+    void resign(User user, int travelId, int candidateId);
+
+    void delete(Candidate candidate);
 }

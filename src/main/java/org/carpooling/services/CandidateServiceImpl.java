@@ -1,8 +1,10 @@
 package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
+import org.carpooling.exceptions.UnauthorizedOperationException;
 import org.carpooling.helpers.constants.ModelNames;
 import org.carpooling.helpers.constants.attribute_constants.CandidateAttributes;
+import org.carpooling.helpers.validators.CandidateValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.Candidate;
 import org.carpooling.models.Travel;
@@ -29,10 +31,9 @@ public class CandidateServiceImpl implements CandidateService {
     public Candidate apply(User user, Candidate candidate, int travelId) {
         UserValidator.isBlocked(user);
         candidateRepository.save(candidate);
-        Travel travelToApply = travelService.getById(travelId);
-
-        travelToApply.getCandidates().add(candidate);
-        travelService.update(travelToApply);
+        Travel toApply = travelService.getById(travelId);
+        toApply.getCandidates().add(candidate);
+        travelService.update(toApply);
         return candidate;
     }
 
@@ -57,7 +58,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public void resign(User user, int travelId) {
+    public void resign(User user, int travelId, int candidateId) {
         //           if (CandidateValidator.isCandidaterInTravel(travelToApply, candidate)) {
 //               throw new DuplicateEntityException(
 //                       ModelNames.CANDIDATE.toString(),
@@ -65,10 +66,19 @@ public class CandidateServiceImpl implements CandidateService {
 //                       String.valueOf(candidate.getUserId())
 //               );
 //           }
-        Candidate candidate = getByUserIdAndTravelId(user.getId(), travelId);
-        Travel travel = travelService.getById(travelId);
-        travel.getCandidates().remove(candidate);
-        travelService.update(travel);
+        Candidate toRemove = getById(candidateId);
+        if (CandidateValidator.isUserCandidate(user, toRemove)) {
+            Travel travel = travelService.getById(travelId);
+            travel.getCandidates().remove(toRemove);
+            travelService.update(travel);
+            candidateRepository.delete(toRemove);
+        }
+        //todo remove below magic String
+       throw new UnauthorizedOperationException("You are unauthorized to perform the request operation");
+    }
+
+    @Override
+    public void delete(Candidate candidate) {
         candidateRepository.delete(candidate);
     }
 }
