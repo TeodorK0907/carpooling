@@ -6,6 +6,7 @@ import org.carpooling.helpers.constants.attribute_constants.PassengerAttributes;
 import org.carpooling.helpers.constants.attribute_constants.TravelAttributes;
 import org.carpooling.models.Candidate;
 import org.carpooling.models.Travel;
+import org.carpooling.models.User;
 
 public class CandidateValidator {
     public static boolean isCandidaterInTravel(Travel travel, Candidate candidate) {
@@ -20,5 +21,9 @@ public class CandidateValidator {
             );
         }
         return true;
+    }
+
+    public static boolean isUserCandidate(User user, Candidate toRemove) {
+        return user.getId() == toRemove.getId();
     }
 }
