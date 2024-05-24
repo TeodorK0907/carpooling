@@ -1,6 +1,11 @@
 package org.carpooling.models.output_dto;
 
+import org.carpooling.models.Candidate;
+import org.carpooling.models.Passenger;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TravelOutputDto {
@@ -13,10 +18,13 @@ public class TravelOutputDto {
     private String status;
     private Double duration;
     private Double distance;
+    private final List<Candidate> candidates;
+    private final List<Passenger> passengers;
     private String comment;
 
-    public TravelOutputDto () {
-
+    public TravelOutputDto() {
+        this.candidates = new ArrayList<>();
+        this.passengers = new ArrayList<>();
     }
 
     public int getTravelId() {
@@ -91,6 +99,16 @@ public class TravelOutputDto {
         this.distance = distance;
     }
 
+    public List<Candidate> getCandidates() {
+        return this.candidates;
+    }
+
+
+    public List<Passenger> getPassengers() {
+        return this.passengers;
+    }
+
+
     public String getComment() {
         return comment;
     }
@@ -109,16 +127,18 @@ public class TravelOutputDto {
                 && Objects.equals(startingPoint, that.startingPoint)
                 && Objects.equals(endingPoint, that.endingPoint)
                 && Objects.equals(departureTime, that.departureTime)
-                && status == that.status
+                && Objects.equals(status, that.status)
                 && Objects.equals(duration, that.duration)
                 && Objects.equals(distance, that.distance)
+                && Objects.equals(candidates, that.candidates)
+                && Objects.equals(passengers, that.passengers)
                 && Objects.equals(comment, that.comment);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(travelId, driverName, startingPoint,
-                endingPoint, departureTime, freeSpots,
-                status, duration, distance, comment);
+                endingPoint, departureTime, freeSpots, status,
+                duration, distance, candidates, passengers, comment);
     }
 }

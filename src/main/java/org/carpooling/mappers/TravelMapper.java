@@ -59,6 +59,9 @@ public class TravelMapper {
         } catch (EntityNotFoundException e) {
             output.setComment(null);
         }
+        output.getCandidates().addAll(travel.getCandidates());
+        output.getPassengers().addAll(travel.getPassengers());
         return output;
     }
+
 }

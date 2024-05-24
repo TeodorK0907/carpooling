@@ -3,13 +3,10 @@ package org.carpooling.controllers;
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthenticatedRequestException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
-import org.carpooling.mappers.CandidateMapper;
 import org.carpooling.mappers.PassengerMapper;
-import org.carpooling.models.Candidate;
 import org.carpooling.models.Passenger;
 import org.carpooling.models.User;
 import org.carpooling.security.AuthenticationManager;
-import org.carpooling.services.contracts.CandidateService;
 import org.carpooling.services.contracts.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,9 +25,10 @@ public class PassengerController {
     @Autowired
     public PassengerController(AuthenticationManager authManager,
                                PassengerService passengerService,
-                               ) {
+                               PassengerMapper passengerMapper) {
         this.authManager = authManager;
         this.passengerService = passengerService;
+        this.passengerMapper = passengerMapper;
     }
 
     @PostMapping("/{candidateId}")
@@ -57,7 +55,7 @@ public class PassengerController {
                                                  @PathVariable int passengerId) {
         try {
             User authUser = authManager.fetchUser(headers);
-            passengerService.decline(authUser, passenger, travelId);
+            passengerService.decline(authUser, passengerId, travelId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -67,5 +65,4 @@ public class PassengerController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
-
 }

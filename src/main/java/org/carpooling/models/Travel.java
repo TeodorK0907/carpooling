@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.carpooling.helpers.constants.TravelStatus;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -34,15 +36,22 @@ public class Travel {
     private Double duration;
     @Column(name = "distance")
     private Double distance;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "passenger_id")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "travel_passengers",
+            schema = "rose-valley-travel",
+    joinColumns = @JoinColumn(name = "travel_id"),
+    inverseJoinColumns = @JoinColumn(name = "passenger_id"))
     private Set<Passenger> passengers;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "candidate_id")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "travel_candidates",
+            schema = "rose-valley-travel",
+            joinColumns = @JoinColumn(name = "travel_id"),
+            inverseJoinColumns = @JoinColumn(name = "candidate_id"))
     private Set<Candidate> candidates;
 
     public Travel () {
-
+        this.candidates = new HashSet<>();
+        this.passengers = new HashSet<>();
     }
 
     public int getId() {
@@ -131,5 +140,28 @@ public class Travel {
 
     public void setCandidates(Set<Candidate> candidates) {
         this.candidates = candidates;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Travel travel)) return false;
+        return id == travel.id
+                && free_spots == travel.free_spots
+                && Objects.equals(creator, travel.creator)
+                && Objects.equals(startingTravelPoint, travel.startingTravelPoint)
+                && Objects.equals(endingTravelPoint, travel.endingTravelPoint)
+                && Objects.equals(departureTime, travel.departureTime)
+                && status == travel.status && Objects.equals(duration, travel.duration)
+                && Objects.equals(distance, travel.distance)
+                && Objects.equals(passengers, travel.passengers)
+                && Objects.equals(candidates, travel.candidates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, creator, startingTravelPoint, endingTravelPoint,
+                departureTime, free_spots, status, duration,
+                distance, passengers, candidates);
     }
 }

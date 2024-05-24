@@ -20,7 +20,7 @@ public interface TravelRepository extends JpaRepository<Travel, Integer> {
             + "and (:driver='' or t.creator.username like :driver) "
             + "and t.departureTime >= :departAfter "
             + "and t.departureTime <= :departBefore "
-            + "and t.free_spots <= :freeSpots"
+            + "and t.free_spots >= :freeSpots"
     )
     Page<Travel> findAllWithFilter(@Param("startLocation")String startLocation,
                                    @Param("endLocation")String endLocation,
