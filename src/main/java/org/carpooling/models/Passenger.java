@@ -1,31 +1,62 @@
 package org.carpooling.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "passengers", schema = "rose-valley-travel")
-public class Passenger extends Candidate {
-    //    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "passenger_id")
-//    private int id;
-//    @JsonIgnore
-//    @Column(name = "user_id")
-//    private int userId;
-//    @Column(name = "travel_id")
-//    private int travelId;
-//    @Column(name = "username")
-//    private String username;
+public class Passenger {
+        @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "passenger_id")
+    private int id;
+    @JsonIgnore
+    @Column(name = "user_id")
+    private int userId;
+    @Column(name = "travel_id")
+    private int travelId;
+    @Column(name = "username")
+    private String username;
     @Column(name = "gave_rating")
     private boolean gaveRating;
     @Column(name = "given_rating")
     private boolean givenRating;
 
     public Passenger() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getTravelId() {
+        return travelId;
+    }
+
+    public void setTravelId(int travelId) {
+        this.travelId = travelId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public boolean isGaveRating() {
@@ -48,12 +79,17 @@ public class Passenger extends Candidate {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Passenger passenger)) return false;
-        return gaveRating == passenger.gaveRating
-                && givenRating == passenger.givenRating;
+        return id == passenger.id
+                && userId == passenger.userId
+                && travelId == passenger.travelId
+                && gaveRating == passenger.gaveRating
+                && givenRating == passenger.givenRating
+                && Objects.equals(username, passenger.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gaveRating, givenRating);
+        return Objects.hash(id, userId, travelId,
+                username, gaveRating, givenRating);
     }
 }
