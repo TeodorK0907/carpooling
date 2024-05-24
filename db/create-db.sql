@@ -1,14 +1,3 @@
-CREATE TABLE roles
-(
-    role_id   serial primary key,
-    role_name varchar(20) not null
-);
-
-CREATE TABLE travel_statuses
-(
-    status_id   int primary key,
-    status_name varchar(20) not null
-);
 
 CREATE TABLE feedbacks
 (
@@ -63,22 +52,12 @@ CREATE TABLE candidates
     username     varchar(20) not null
 );
 
-
---todo try first using points only
-CREATE TABLE addresses
-(
-    address_id   serial primary key,
-    address_name varchar(250) not null
-);
-
 CREATE TABLE points
 (
     point_id  serial primary key,
     address   varchar(250)     not null,
     latitude  double precision not null,
     longitude double precision not null
---     constraint points_addresses_address_fk
---         foreign key (address) references addresses (address_id)
 );
 
 CREATE TABLE travels
@@ -87,7 +66,7 @@ CREATE TABLE travels
     created_by       int              not null,
     starting_point   int              not null,
     ending_point     int              not null,
-    departure_time   time             not null,
+    departure_time   timestamp        not null,
     free_spots       int              not null,
 --     comment_id       int,
     travel_status_id int              not null,
