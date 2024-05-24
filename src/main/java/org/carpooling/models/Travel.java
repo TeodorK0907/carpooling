@@ -34,11 +34,17 @@ public class Travel {
     private Double duration;
     @Column(name = "distance")
     private Double distance;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "passenger_id")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "travel_passengers",
+            schema = "rose-valley-travel",
+    joinColumns = @JoinColumn(name = "travel_id"),
+    inverseJoinColumns = @JoinColumn(name = "passenger_id"))
     private Set<Passenger> passengers;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "candidate_id")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "travel_candidates",
+            schema = "rose-valley-travel",
+            joinColumns = @JoinColumn(name = "travel_id"),
+            inverseJoinColumns = @JoinColumn(name = "candidate_id"))
     private Set<Candidate> candidates;
 
     public Travel () {

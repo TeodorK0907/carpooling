@@ -54,7 +54,7 @@ public class CandidateController {
                                                  @PathVariable int candidateId) {
         try {
             User authUser = authManager.fetchUser(headers);
-            candidateService.resign(authUser, travelId);
+            candidateService.resign(authUser, travelId, candidateId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
