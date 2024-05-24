@@ -66,12 +66,13 @@ public class TravelController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Travel> getTravelById(@RequestHeader HttpHeaders headers,
+    public ResponseEntity<TravelOutputDto> getTravelById(@RequestHeader HttpHeaders headers,
                                                 @PathVariable int id) {
         try {
             authManager.fetchUser(headers);
             Travel travel = travelService.getById(id);
-            return ResponseEntity.ok().body(travel);
+            TravelOutputDto output = travelMapper.toDto(travel);
+            return ResponseEntity.ok().body(output);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthenticatedRequestException e) {
@@ -115,79 +116,12 @@ public class TravelController {
         }
 
     }
-
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelTravel(@RequestHeader HttpHeaders headers,
                                              @PathVariable int id) {
         try {
             User authUser = authManager.fetchUser(headers);
             travelService.cancel(authUser, id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthenticatedRequestException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    @PutMapping("{id}/apply")
-    public ResponseEntity<Void> applyForTravel(@RequestHeader HttpHeaders headers,
-                                               @PathVariable int id) {
-        try {
-            User authUser = authManager.fetchUser(headers);
-            travelService.apply(authUser, id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthenticatedRequestException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    @PutMapping("{id}/resign")
-    public ResponseEntity<Void> resignFromTravel(@RequestHeader HttpHeaders headers,
-                                                 @PathVariable int id) {
-        try {
-            User authUser = authManager.fetchUser(headers);
-            travelService.resign(authUser, id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthenticatedRequestException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    @PutMapping("/{travelId}/approve/{candidateId}")
-    public ResponseEntity<Void> approveCandidate(@RequestHeader HttpHeaders headers,
-                                                 @PathVariable int travelId,
-                                                 @PathVariable int candidateId) {
-        try {
-            User authUser = authManager.fetchUser(headers);
-            travelService.approve(authUser, travelId, candidateId);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthenticatedRequestException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-    }
-
-    @PutMapping("/{travelId}/decline/{candidateId}")
-    public ResponseEntity<Void> declineCandidate(@RequestHeader HttpHeaders headers,
-                                                 @PathVariable int travelId,
-                                                 @PathVariable int candidateId) {
-        try {
-            User authUser = authManager.fetchUser(headers);
-            travelService.decline(authUser, travelId, candidateId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
