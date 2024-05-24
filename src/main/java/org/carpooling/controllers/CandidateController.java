@@ -33,7 +33,7 @@ public class CandidateController {
 
     @PostMapping()
     public ResponseEntity<Candidate> applyForTravel(@RequestHeader HttpHeaders headers,
-                                               @PathVariable int travelId) {
+                                                    @PathVariable int travelId) {
         try {
             User authUser = authManager.fetchUser(headers);
             Candidate candidate = candidateMapper.toObj(authUser, travelId);
