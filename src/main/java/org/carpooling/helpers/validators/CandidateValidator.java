@@ -23,7 +23,7 @@ public class CandidateValidator {
         return true;
     }
 
-    public static boolean isUserCandidate(User user, Candidate toRemove) {
-        return user.getId() == toRemove.getId();
+    public static boolean isUserCandidate(User user, Candidate candidate) {
+        return user.getId() == candidate.getUserId();
     }
 }
