@@ -4,17 +4,17 @@ import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.helpers.constants.ModelNames;
 import org.carpooling.helpers.constants.attribute_constants.PassengerAttributes;
 import org.carpooling.helpers.constants.attribute_constants.TravelAttributes;
-import org.carpooling.models.Candidate;
+import org.carpooling.models.Passenger;
 import org.carpooling.models.Travel;
 import org.carpooling.models.User;
 
-public class CandidateValidator {
-    public static boolean isCandidaterInTravel(Travel travel, Candidate candidate) {
-        if (!travel.getCandidates().contains(candidate)) {
+public class PassengerValidator {
+    public static boolean isPassengerInTravel(Travel travel, Passenger passenger) {
+        if (!travel.getPassengers().contains(passenger)) {
             throw new EntityNotFoundException(
-                    ModelNames.CANDIDATE.toString(),
+                    ModelNames.PASSENGER.toString(),
                     PassengerAttributes.USER_ID.toString(),
-                    String.valueOf(candidate.getUserId()),
+                    String.valueOf(passenger.getUserId()),
                     ModelNames.TRAVEL.toString(),
                     TravelAttributes.ID.toString(),
                     String.valueOf(travel.getId())
@@ -23,7 +23,7 @@ public class CandidateValidator {
         return true;
     }
 
-    public static boolean isUserCandidate(User user, Candidate candidate) {
-        return user.getId() == candidate.getUserId();
+    public static boolean isUserPassenger(User user, Passenger passenger) {
+        return user.getId() == passenger.getUserId();
     }
 }
