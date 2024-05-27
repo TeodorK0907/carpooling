@@ -19,13 +19,13 @@ public class PassengerMapper {
     }
 
     public Passenger toObj(int candidateId) {
-       Candidate candidateToApprove = candidateService.getById(candidateId);
-       Passenger passenger = new Passenger();
+        Candidate candidateToApprove = candidateService.getById(candidateId);
+        Passenger passenger = new Passenger();
         passenger.setUserId(candidateToApprove.getUserId());
-       passenger.setTravelId(candidateToApprove.getTravelId());
-       passenger.setUsername(candidateToApprove.getUsername());
-       passenger.setGivenRating(false);
-       passenger.setGaveRating(false);
-       return passenger;
+        passenger.setTravelId(candidateToApprove.getTravelId());
+        passenger.setUsername(candidateToApprove.getUsername());
+        passenger.setGivenRating(false);
+        passenger.setGaveRating(false);
+        return passenger;
     }
 }
