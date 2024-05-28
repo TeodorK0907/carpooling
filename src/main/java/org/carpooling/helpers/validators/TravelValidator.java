@@ -9,6 +9,9 @@ import org.carpooling.models.TravelPoint;
 import org.carpooling.models.User;
 import org.springframework.data.domain.Page;
 
+import static org.carpooling.helpers.constants.ModelNames.TRAVEL;
+import static org.carpooling.helpers.constants.attribute_constants.UserAttribute.ID;
+
 
 public class TravelValidator {
 
@@ -58,5 +61,12 @@ public class TravelValidator {
             throw new BadRequestException(String.format("Travel status is %s, status must be completed",
                     travel.getStatus().toString()));
         }
+    }
+
+    public static boolean isTravelDeleted(Travel travel) {
+        if (travel.isArchived()) {
+            throw new EntityNotFoundException(TRAVEL.toString(), ID.toString(), String.valueOf(travel.getId()));
+        }
+        return false;
     }
 }
