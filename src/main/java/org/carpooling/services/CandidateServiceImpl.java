@@ -4,6 +4,7 @@ import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
 import org.carpooling.helpers.constants.ModelNames;
 import org.carpooling.helpers.constants.attribute_constants.CandidateAttributes;
+import org.carpooling.helpers.errors.CandidateValidatorErrors;
 import org.carpooling.helpers.validators.CandidateValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.Candidate;
@@ -59,13 +60,6 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public void resign(User user, int travelId, int candidateId) {
-        //           if (CandidateValidator.isCandidaterInTravel(travelToApply, candidate)) {
-//               throw new DuplicateEntityException(
-//                       ModelNames.CANDIDATE.toString(),
-//                       CandidateAttributes.USER_ID.toString(),
-//                       String.valueOf(candidate.getUserId())
-//               );
-//           }
         Candidate toRemove = getById(candidateId);
         if (CandidateValidator.isUserCandidate(user, toRemove)) {
             Travel travel = travelService.getById(travelId);
@@ -73,8 +67,7 @@ public class CandidateServiceImpl implements CandidateService {
             travelService.update(travel);
             candidateRepository.delete(toRemove);
         }
-        //todo remove below magic String
-       throw new UnauthorizedOperationException("You are unauthorized to perform the request operation");
+        throw new UnauthorizedOperationException(CandidateValidatorErrors.UNAUTHORIZED.toString());
     }
 
     @Override

@@ -66,6 +66,11 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    public void update(Passenger passenger) {
+        passengerRepository.save(passenger);
+    }
+
+    @Override
     public void decline(User user, int passengerId, int travelId) {
         Travel travel = travelService.getById(travelId);
         TravelValidator.isUserCreatorOfTravel(user, travel.getCreator());

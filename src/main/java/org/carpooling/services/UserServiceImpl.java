@@ -2,20 +2,20 @@ package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
+import org.carpooling.helpers.errors.UserValidatorErrors;
 import org.carpooling.helpers.model_filters.UserFilterOptions;
-import org.carpooling.helpers.validators.UserFilterValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.User;
 import org.carpooling.repositories.UserRepository;
 import org.carpooling.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import static org.carpooling.helpers.constants.ModelNames.USER;
 import static org.carpooling.helpers.constants.attribute_constants.UserAttribute.*;
-
-import java.util.*;
 
 
 @Service
@@ -26,13 +26,13 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+    //todo add default values for pageNum and pageSize
     @Override
     public Page<User> getAll(User authUser, UserFilterOptions filter) {
         UserValidator.isAdmin(authUser);
         Page<User> users;
         Pageable page = PageRequest.of(0, 10);
-
+    //todo add constants for empty param
         users = userRepository
                 .findAllWithFilter(
                         String.format("%%%s%%", filter.getUsername().orElse("")),
@@ -47,27 +47,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(int userId) {
-        return userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException(USER.toString(), ID.toString(), String.valueOf(userId)));
-
+        UserValidator.isUserDeleted(user);
+        return user;
     }
 
     @Override
     public User getByUsername(String username) {
-        return userRepository.findUserByUsername(username).orElseThrow(
+        User user = userRepository.findUserByUsername(username).orElseThrow(
                 () -> new EntityNotFoundException(USER.toString(), USERNAME.toString(), username));
+        UserValidator.isUserDeleted(user);
+        return user;
     }
 
     @Override
     public User getByEmail(String email) {
-        return userRepository.findUserByEmail(email).orElseThrow(
+        User user = userRepository.findUserByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException(USER.toString(), EMAIL.toString(), email));
+        UserValidator.isUserDeleted(user);
+        return user;
     }
 
     @Override
     public User getByPhoneNumber(String phone_number) {
-        return userRepository.findUserByPhoneNumber(phone_number).orElseThrow(
+        User user = userRepository.findUserByPhoneNumber(phone_number).orElseThrow(
                 () -> new EntityNotFoundException(USER.toString(), USERNAME.toString(), phone_number));
+        UserValidator.isUserDeleted(user);
+        return user;
     }
 
     @Override
@@ -77,13 +84,11 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    //todo remove below magic String
     @Override
     public User update(User authUser, User user) {
         doesUserDataAlreadyExist(user);
         if (UserValidator.isIdDifferent(authUser, user)) {
-            throw new UnauthorizedOperationException(
-                    "You are unauthorized to perform the required action.");
+            throw new UnauthorizedOperationException(UserValidatorErrors.UNAUTHORIZED.toString());
         }
         userRepository.save(user);
         return user;
@@ -107,11 +112,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(User authUser, int userId) {
-
         User toBeDeleted = getById(userId);
         if (UserValidator.isIdDifferent(authUser, toBeDeleted)) {
-            throw new UnauthorizedOperationException(
-                    "You are unauthorized to perform the required action");
+            throw new UnauthorizedOperationException(UserValidatorErrors.UNAUTHORIZED.toString());
         }
         toBeDeleted.setArchived(true);
         userRepository.save(toBeDeleted);

@@ -2,6 +2,7 @@ package org.carpooling.controllers;
 
 import org.carpooling.exceptions.BadRequestException;
 import org.carpooling.exceptions.DuplicateRequestException;
+import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthenticatedRequestException;
 import org.carpooling.models.Rating;
 import org.carpooling.models.User;
@@ -44,6 +45,8 @@ public class RatingController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (DuplicateRequestException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
@@ -63,6 +66,8 @@ public class RatingController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (DuplicateRequestException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 }

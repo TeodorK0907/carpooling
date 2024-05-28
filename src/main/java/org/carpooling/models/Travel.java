@@ -36,6 +36,8 @@ public class Travel {
     private Double duration;
     @Column(name = "distance")
     private Double distance;
+    @Column(name = "is_archived")
+    private boolean isArchived;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "travel_passengers",
             schema = "rose-valley-travel",
@@ -126,6 +128,14 @@ public class Travel {
         this.distance = distance;
     }
 
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+    }
+
     public Set<Passenger> getPassengers() {
         return passengers;
     }
@@ -148,11 +158,13 @@ public class Travel {
         if (!(o instanceof Travel travel)) return false;
         return id == travel.id
                 && free_spots == travel.free_spots
+                && isArchived == travel.isArchived
                 && Objects.equals(creator, travel.creator)
                 && Objects.equals(startingTravelPoint, travel.startingTravelPoint)
                 && Objects.equals(endingTravelPoint, travel.endingTravelPoint)
                 && Objects.equals(departureTime, travel.departureTime)
-                && status == travel.status && Objects.equals(duration, travel.duration)
+                && status == travel.status
+                && Objects.equals(duration, travel.duration)
                 && Objects.equals(distance, travel.distance)
                 && Objects.equals(passengers, travel.passengers)
                 && Objects.equals(candidates, travel.candidates);
@@ -160,8 +172,9 @@ public class Travel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creator, startingTravelPoint, endingTravelPoint,
-                departureTime, free_spots, status, duration,
-                distance, passengers, candidates);
+        return Objects.hash(id, creator, startingTravelPoint,
+                endingTravelPoint, departureTime, free_spots,
+                status, duration, distance, isArchived,
+                passengers, candidates);
     }
 }
