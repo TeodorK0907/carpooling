@@ -10,5 +10,7 @@ public interface PassengerService {
 
     Passenger getByUserAndTravelId(int userId, int travelId);
 
+    void update(Passenger passenger);
+
     void decline(User user, int passengerId, int travelId);
 }
