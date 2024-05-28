@@ -1,6 +1,7 @@
 package org.carpooling.services;
 
 import org.carpooling.exceptions.BadRequestException;
+import org.carpooling.helpers.errors.RatingValidatorErrors;
 import org.carpooling.helpers.validators.PassengerValidator;
 import org.carpooling.helpers.validators.RatingValidator;
 import org.carpooling.helpers.validators.TravelValidator;
@@ -48,17 +49,15 @@ public class RatingServiceImpl implements RatingService {
         TravelValidator.isUserCreatorOfTravel(authenticatedUser, travel.getCreator());
         TravelValidator.isStatusCompleted(travel);
         PassengerValidator.isPassengerInTravel(travel, passenger);
-        if (PassengerValidator.isUserPassenger(authenticatedUser, passenger)) {
+        if (!PassengerValidator.isUserPassenger(authenticatedUser, passenger)) {
             RatingValidator.isPassengerAlreadyGivenRating(passenger, travelId);
             User toReceiveRating = userService.getById(passenger.getUserId());
             Rating rating = updatePassengerRating(toReceiveRating, passenger, ratingToReceive);
-            //todo update passenger
             passengerService.update(passenger);
             ratingRepository.save(rating);
             return rating;
         }
-        //todo convert below magic string to constant
-        throw new BadRequestException("it is not allowed for users to give feedback to themselves.");
+        throw new BadRequestException(RatingValidatorErrors.SAME_USER.toString());
     }
 
     @Override
@@ -68,15 +67,14 @@ public class RatingServiceImpl implements RatingService {
         if (!TravelValidator.isCreatorOfTravelCurrentUser(authenticatedUser, travel.getCreator())) {
             Passenger passenger = passengerService.getByUserAndTravelId(
                     authenticatedUser.getId(), travelId);
+            User user = userService.getById(travel.getCreator().getId());
             RatingValidator.hasPassengerAlreadyGivenRating(passenger, travelId);
-            Rating rating = updateDriverRating(passenger, authenticatedUser, ratingToReceive);
-            //todo update passenger
+            Rating rating = updateDriverRating(passenger, user, ratingToReceive);
             passengerService.update(passenger);
             ratingRepository.save(rating);
             return rating;
         }
-        //todo convert below magic string to constant
-        throw new BadRequestException("it is not allowed for users to give feedback to themselves.");
+        throw new BadRequestException(RatingValidatorErrors.SAME_USER.toString());
     }
 
     private Rating updatePassengerRating(User toGetFeedback, Passenger isGivenFeedback, int ratingToReceive) {
@@ -92,8 +90,8 @@ public class RatingServiceImpl implements RatingService {
     }
 
     private Rating calculateNewRating(Rating rating, int ratingToReceive) {
-        rating.setAvgRating((rating.getAvgRating() + ratingToReceive) / rating.getTotalFeedbacks());
         rating.setTotalFeedbacks(rating.getTotalFeedbacks() + NEW_RATING);
+        rating.setAvgRating((rating.getAvgRating() + ratingToReceive) / rating.getTotalFeedbacks());
         return rating;
     }
 }
