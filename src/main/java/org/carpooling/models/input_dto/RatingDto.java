@@ -7,9 +7,11 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class RatingDto {
+    private static final int LOWEST_RATING = 0;
+    private static final int HIGHEST_RATING = 5;
     @NotNull
-    @Min(value = 1)
-    @Max(value = 5)
+    @Min(value = LOWEST_RATING)
+    @Max(value = HIGHEST_RATING)
     private int rating;
 
     public RatingDto() {
