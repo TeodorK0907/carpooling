@@ -1,4 +1,3 @@
-
 CREATE TABLE feedbacks
 (
     feedback_id     serial primary key,
@@ -63,15 +62,16 @@ CREATE TABLE points
 CREATE TABLE travels
 (
     travel_id        serial primary key,
-    created_by       int              not null,
-    starting_point   int              not null,
-    ending_point     int              not null,
-    departure_time   timestamp        not null,
-    free_spots       int              not null,
+    created_by       int                   not null,
+    starting_point   int                   not null,
+    ending_point     int                   not null,
+    departure_time   timestamp             not null,
+    free_spots       int                   not null,
 --     comment_id       int,
-    travel_status_id int              not null,
-    duration         double precision not null,
-    distance         double precision not null,
+    travel_status_id int                   not null,
+    duration         double precision      not null,
+    distance         double precision      not null,
+    is_archived      boolean default false not null,
     constraint travels_users_created_by_fk
         foreign key (created_by) references users (user_id),
     constraint travels_points_starting_point_id_fk
