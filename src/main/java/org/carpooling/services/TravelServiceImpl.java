@@ -6,6 +6,7 @@ import org.carpooling.exceptions.UnsuccessfulResponseException;
 import org.carpooling.helpers.constants.TravelFilters;
 import org.carpooling.helpers.constants.TravelStatus;
 import org.carpooling.helpers.constants.bing_maps_client.BingMapsClientKey;
+import org.carpooling.helpers.errors.BingMapsClientErrors;
 import org.carpooling.helpers.model_filters.TravelFilterOptions;
 import org.carpooling.helpers.validators.BingMapsClientValidator;
 import org.carpooling.helpers.validators.TravelValidator;
@@ -45,6 +46,7 @@ public class TravelServiceImpl implements TravelService {
     }
 
     //todo create default params for both pageNum and pageSize
+    // todo add sorting
     @Override
     public Page<Travel> getAll(User authenticatedUser, TravelFilterOptions filter) {
         Page<Travel> travels;
@@ -70,8 +72,10 @@ public class TravelServiceImpl implements TravelService {
 
     @Override
     public Travel getById(int travelId) {
-        return travelRepository.findById(travelId).orElseThrow(
+        Travel travel = travelRepository.findById(travelId).orElseThrow(
                 () -> new EntityNotFoundException(TRAVEL.toString(), ID.toString(), String.valueOf(travelId)));
+        TravelValidator.isTravelDeleted(travel);
+        return travel;
     }
 
     @Override
@@ -94,8 +98,7 @@ public class TravelServiceImpl implements TravelService {
             commentService.create(commentContent, travel.getId());
             return travel;
         }
-        //todo remove below magic String
-        throw new UnsuccessfulResponseException("The request could not be processed.");
+        throw new UnsuccessfulResponseException(BingMapsClientErrors.FAILED_RESPONSE.toString());
     }
 
     @Override
@@ -122,10 +125,12 @@ public class TravelServiceImpl implements TravelService {
         return toBeMarkedCancelled;
     }
 
-    //todo finish below method
     @Override
     public void delete(User authenticatedUser, int travelId) {
-
+        Travel travel = getById(travelId);
+        TravelValidator.isUserCreatorOfTravel(authenticatedUser, travel.getCreator());
+        travel.setArchived(true);
+        travelRepository.save(travel);
     }
 
     private StringBuilder buildLatLongParams(TravelPoint point) {
