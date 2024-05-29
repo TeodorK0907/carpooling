@@ -49,12 +49,17 @@ public class TravelController {
                                                       @RequestParam(required = false)
                                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                       LocalDateTime departBefore,
-                                                      @RequestParam(required = false) Integer freeSpots
+                                                      @RequestParam(required = false) Integer freeSpots,
+                                                      @RequestParam(required = false) Integer pageNum,
+                                                      @RequestParam(required = false) Integer pageSize,
+                                                      @RequestParam(required = false) String sortBy,
+                                                      @RequestParam(required = false) String orderBy
     ) {
         try {
             User authenticatedUser = authManager.fetchUser(headers);
             TravelFilterOptions travelFilter = new TravelFilterOptions(
-                    startLocation, endLocation, driver, departAfter, departBefore, freeSpots
+                    startLocation, endLocation, driver, departAfter, departBefore,
+                    freeSpots, pageNum, pageSize, sortBy, orderBy
             );
             Page<Travel> result = travelService.getAll(authenticatedUser, travelFilter);
             return ResponseEntity.ok().body(result);
