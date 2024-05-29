@@ -5,7 +5,7 @@ import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnsuccessfulResponseException;
 import org.carpooling.helpers.constants.ModelNames;
 import org.carpooling.helpers.constants.attribute_constants.TravelPointAttributes;
-import org.carpooling.helpers.constants.bing_maps_client.BingMapsClientStatus;
+import org.carpooling.helpers.errors.BingMapsClientErrors;
 import org.carpooling.helpers.validators.BingMapsClientValidator;
 import org.carpooling.models.TravelPoint;
 import org.carpooling.repositories.PointRepository;
@@ -23,7 +23,8 @@ import static org.carpooling.helpers.constants.bing_maps_client.BingMapsClientVa
 public class TravelPointServiceImpl implements TravelPointService {
     private static final int FIRST_INDEX = 0;
     private static final int SECOND_INDEX = 1;
-    public static final String DELIMITER = ",";
+    private static final int ONE = 1;
+    private static final String DELIMITER = ",";
     private static final String REPLACEMENT = "/";
     private final BingMapsClient client;
     private final PointRepository pointRepository;
@@ -55,7 +56,7 @@ public class TravelPointServiceImpl implements TravelPointService {
             pointRepository.save(point);
             return point;
         }
-        throw new UnsuccessfulResponseException("The request could not be processed.");
+        throw new UnsuccessfulResponseException(BingMapsClientErrors.FAILED_RESPONSE.toString());
     }
 
     private void populateLocation(StringBuilder location, String address) {
@@ -71,15 +72,23 @@ public class TravelPointServiceImpl implements TravelPointService {
     }
 
     private void populatePoint(TravelPoint point, JSONArray geocodePoints) {
-        for (int i = FIRST_INDEX; i < geocodePoints.length(); i++) {
-            JSONObject geoPoint = geocodePoints.getJSONObject(i);
-            if (geoPoint
-                    .getJSONArray(USAGE_TYPES.toString())
-                    .getString(FIRST_INDEX).equals(ROUTE.toString())) {
-                JSONArray coordinates = geoPoint.getJSONArray(COORDINATES.toString());
-                point.setLatitude(coordinates.getDouble(FIRST_INDEX));
-                point.setLongitude(coordinates.getDouble(SECOND_INDEX));
+        if (geocodePoints.length() > ONE) {
+            for (int i = FIRST_INDEX; i < geocodePoints.length(); i++) {
+                JSONObject geoPoint = geocodePoints.getJSONObject(i);
+                if (geoPoint
+                        .getJSONArray(USAGE_TYPES.toString())
+                        .getString(FIRST_INDEX).equals(ROUTE.toString())) {
+                    populateLatLong(point, geoPoint);
+                }
             }
+        } else {
+            populateLatLong(point, geocodePoints.getJSONObject(FIRST_INDEX));
         }
+    }
+
+    private void populateLatLong(TravelPoint point, JSONObject geoPoint) {
+        JSONArray coordinates = geoPoint.getJSONArray(COORDINATES.toString());
+        point.setLatitude(coordinates.getDouble(FIRST_INDEX));
+        point.setLongitude(coordinates.getDouble(SECOND_INDEX));
     }
 }
