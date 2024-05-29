@@ -42,10 +42,16 @@ public class UserController {
     public ResponseEntity<Page<User>> getAllUsers(@RequestHeader HttpHeaders headers,
                                                   @RequestParam(required = false) String username,
                                                   @RequestParam(required = false) String email,
-                                                  @RequestParam(required = false) String phone_number) {
+                                                  @RequestParam(required = false) String phone_number,
+                                                  @RequestParam(required = false) Integer pageNum,
+                                                  @RequestParam(required = false) Integer pageSize,
+                                                  @RequestParam(required = false) String sortBy,
+                                                  @RequestParam(required = false) String orderBy
+    ) {
         try {
             User authenticatedUser = authManager.fetchUser(headers);
-            UserFilterOptions filter = new UserFilterOptions(username, email, phone_number);
+            UserFilterOptions filter = new UserFilterOptions(
+                    username, email, phone_number, pageNum, pageSize, sortBy, orderBy);
             Page<User> result = userService.getAll(authenticatedUser, filter);
             return ResponseEntity.ok().body(result);
         } catch (EntityNotFoundException e) {

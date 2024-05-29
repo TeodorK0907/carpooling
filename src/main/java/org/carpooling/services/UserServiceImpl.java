@@ -2,8 +2,11 @@ package org.carpooling.services;
 
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
+import org.carpooling.helpers.constants.UserFiltersDefaultParam;
 import org.carpooling.helpers.errors.UserValidatorErrors;
 import org.carpooling.helpers.model_filters.UserFilterOptions;
+import org.carpooling.helpers.validators.TravelFilterValidator;
+import org.carpooling.helpers.validators.UserFilterValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.User;
 import org.carpooling.repositories.UserRepository;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static org.carpooling.helpers.constants.ModelNames.USER;
@@ -26,18 +30,28 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    //todo add default values for pageNum and pageSize
     @Override
     public Page<User> getAll(User authUser, UserFilterOptions filter) {
         UserValidator.isAdmin(authUser);
         Page<User> users;
-        Pageable page = PageRequest.of(0, 10);
-    //todo add constants for empty param
+        Sort sort = Sort.by(
+                UserFilterValidator.getOrder(filter.getOrderBy()),
+                UserFilterValidator.getSort(filter.getSortBy()));
+        Pageable page = PageRequest.of(
+                UserFilterValidator.getPageNum(filter.getPageNum()),
+                UserFilterValidator.getPageSize(filter.getPageSize()),
+                sort);
         users = userRepository
                 .findAllWithFilter(
-                        String.format("%%%s%%", filter.getUsername().orElse("")),
-                        String.format("%%%s%%", filter.getEmail().orElse("")),
-                        String.format("%%%s%%", filter.getPhoneNumber().orElse("")),
+                        String.format(UserFiltersDefaultParam.FORMAT,
+                                filter.getUsername()
+                                        .orElse(UserFiltersDefaultParam.EMPTY_STRING_FILTER)),
+                        String.format(UserFiltersDefaultParam.FORMAT,
+                                filter.getEmail().
+                                        orElse(UserFiltersDefaultParam.EMPTY_STRING_FILTER)),
+                        String.format(UserFiltersDefaultParam.FORMAT,
+                                filter.getPhoneNumber().
+                                        orElse(UserFiltersDefaultParam.EMPTY_STRING_FILTER)),
                         page
                 );
 
