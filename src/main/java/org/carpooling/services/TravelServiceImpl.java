@@ -3,12 +3,13 @@ package org.carpooling.services;
 import org.carpooling.clients.BingMapsClient;
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnsuccessfulResponseException;
-import org.carpooling.helpers.constants.TravelFilters;
+import org.carpooling.helpers.constants.TravelFiltersDefaultParam;
 import org.carpooling.helpers.constants.TravelStatus;
 import org.carpooling.helpers.constants.bing_maps_client.BingMapsClientKey;
 import org.carpooling.helpers.errors.BingMapsClientErrors;
 import org.carpooling.helpers.model_filters.TravelFilterOptions;
 import org.carpooling.helpers.validators.BingMapsClientValidator;
+import org.carpooling.helpers.validators.TravelFilterValidator;
 import org.carpooling.helpers.validators.TravelValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.*;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static org.carpooling.helpers.constants.ModelNames.TRAVEL;
@@ -45,25 +47,29 @@ public class TravelServiceImpl implements TravelService {
         this.client = client;
     }
 
-    //todo create default params for both pageNum and pageSize
-    // todo add sorting
     @Override
     public Page<Travel> getAll(User authenticatedUser, TravelFilterOptions filter) {
         Page<Travel> travels;
-        Pageable page = PageRequest.of(0, 10);
+        Sort sort = Sort.by(
+                TravelFilterValidator.getOrder(filter.getOrderBy()),
+                TravelFilterValidator.getSort(filter.getSortBy()));
+        Pageable page = PageRequest.of(
+                TravelFilterValidator.getPageNum(filter.getPageNum())
+                , TravelFilterValidator.getPageSize(filter.getPageSize()),
+                sort);
         travels = travelRepository.findAllWithFilter(
-                String.format("%%%s%%", filter.getStartLocation()
-                        .orElse(TravelFilters.EMPTY_STRING_FILTER)),
-                String.format("%%%s%%", filter.getEndLocation()
-                        .orElse(TravelFilters.EMPTY_STRING_FILTER)),
-                String.format("%%%s%%", filter.getDriver()
-                        .orElse(TravelFilters.EMPTY_STRING_FILTER)),
+                String.format(TravelFiltersDefaultParam.FORMAT, filter.getStartLocation()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_STRING_FILTER)),
+                String.format(TravelFiltersDefaultParam.FORMAT, filter.getEndLocation()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_STRING_FILTER)),
+                String.format(TravelFiltersDefaultParam.FORMAT, filter.getDriver()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_STRING_FILTER)),
                 filter.getDepartAfter()
-                        .orElse(TravelFilters.EMPTY_DATE_AFTER),
+                        .orElse(TravelFiltersDefaultParam.EMPTY_DATE_AFTER),
                 filter.getDepartBefore()
-                        .orElse(TravelFilters.EMPTY_DATE_BEFORE),
+                        .orElse(TravelFiltersDefaultParam.EMPTY_DATE_BEFORE),
                 filter.getFreeSpots()
-                        .orElse(TravelFilters.EMPTY_FREE_SPOTS),
+                        .orElse(TravelFiltersDefaultParam.EMPTY_FREE_SPOTS),
                 page
         );
         TravelValidator.isTravelListEmpty(travels);
