@@ -1,6 +1,6 @@
 package org.carpooling.services;
 
-import org.carpooling.clients.BingMapsClient;
+import org.carpooling.clients.contracts.BingMapsClient;
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnsuccessfulResponseException;
 import org.carpooling.helpers.constants.TravelFiltersDefaultParam;

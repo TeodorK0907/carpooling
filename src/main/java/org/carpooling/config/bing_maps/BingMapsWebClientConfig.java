@@ -1,4 +1,4 @@
-package org.carpooling.config;
+package org.carpooling.config.bing_maps;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
