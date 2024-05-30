@@ -1,10 +1,10 @@
 package org.carpooling.clients;
 
-import org.carpooling.config.BingMapsWebClientConfig;
+import org.carpooling.clients.contracts.BingMapsClient;
+import org.carpooling.config.bing_maps.BingMapsWebClientConfig;
 import org.carpooling.helpers.constants.bing_maps_client.BingMapsClientEndpoint;
 import org.carpooling.helpers.constants.bing_maps_client.BingMapsClientKey;
 import org.carpooling.helpers.constants.bing_maps_client.BingMapsClientValue;
-import org.carpooling.models.TravelPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

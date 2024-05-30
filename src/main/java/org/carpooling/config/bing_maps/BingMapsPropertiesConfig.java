@@ -1,4 +1,4 @@
-package org.carpooling.config;
+package org.carpooling.config.bing_maps;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

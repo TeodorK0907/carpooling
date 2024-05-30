@@ -1,4 +1,4 @@
-package org.carpooling.clients;
+package org.carpooling.clients.contracts;
 
 
 public interface BingMapsClient {
