@@ -74,4 +74,11 @@ public class UserValidator {
         }
         return false;
     }
+
+    public static boolean isVerified(User user) {
+        if (user.isVerified()) {
+            throw new UnauthorizedOperationException(UserValidatorErrors.UNAUTHORIZED.toString());
+        }
+        return false;
+    }
 }

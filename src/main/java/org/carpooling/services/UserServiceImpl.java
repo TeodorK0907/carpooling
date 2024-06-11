@@ -5,11 +5,11 @@ import org.carpooling.exceptions.UnauthorizedOperationException;
 import org.carpooling.helpers.constants.UserFiltersDefaultParam;
 import org.carpooling.helpers.errors.UserValidatorErrors;
 import org.carpooling.helpers.model_filters.UserFilterOptions;
-import org.carpooling.helpers.validators.TravelFilterValidator;
 import org.carpooling.helpers.validators.UserFilterValidator;
 import org.carpooling.helpers.validators.UserValidator;
 import org.carpooling.models.User;
 import org.carpooling.repositories.UserRepository;
+import org.carpooling.services.contracts.EmailVerificationService;
 import org.carpooling.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,10 +25,13 @@ import static org.carpooling.helpers.constants.attribute_constants.UserAttribute
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final EmailVerificationService mailService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           EmailVerificationService mailService) {
         this.userRepository = userRepository;
+        this.mailService = mailService;
     }
     @Override
     public Page<User> getAll(User authUser, UserFilterOptions filter) {
@@ -95,6 +98,7 @@ public class UserServiceImpl implements UserService {
     public User create(User user) {
         doesUserDataAlreadyExist(user);
         userRepository.save(user);
+        mailService.sendEmail(user.getEmail());
         return user;
     }
 

@@ -39,6 +39,8 @@ public class User {
     private boolean archived;
     @Column(name = "profile_picture")
     private String profilePicture;
+    @Column(name = "is_verified")
+    private boolean isVerified;
 
     public User() {
     }
@@ -147,6 +149,14 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,6 +164,7 @@ public class User {
         return id == user.id
                 && blocked == user.blocked
                 && archived == user.archived
+                && isVerified == user.isVerified
                 && Objects.equals(username, user.username)
                 && Objects.equals(password, user.password)
                 && Objects.equals(firstname, user.firstname)
@@ -171,6 +182,6 @@ public class User {
         return Objects.hash(id, username, password,
                 firstname, lastname, email,
                 phoneNumber, driverRating, passengerRating,
-                role, blocked, archived, profilePicture);
+                role, blocked, archived, profilePicture, isVerified);
     }
 }
