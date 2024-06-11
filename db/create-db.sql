@@ -24,6 +24,7 @@ CREATE TABLE users
     driver_rating_id    int          not null,
     passenger_rating_id int          not null,
     role_id             int,
+    is_verified         boolean default false,
     is_blocked          boolean default false,
     is_archived         boolean default false,
     profile_picture     varchar(100) null,
@@ -111,3 +112,10 @@ CREATE TABLE travel_passengers
     constraint travel_candidates_travels_passenger_id_fk
         foreign key (passenger_id) references passengers (passenger_id) on delete cascade
 );
+
+CREATE TABLE verification_email
+(
+    mail_id varchar primary key,
+    email varchar(50) unique not null,
+    status_id int not null
+)
