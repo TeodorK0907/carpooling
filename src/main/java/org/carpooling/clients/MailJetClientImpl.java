@@ -6,14 +6,16 @@ import org.carpooling.exceptions.BadRequestException;
 import org.carpooling.helpers.constants.mail_jet_client.MailJetClientEndpoint;
 import org.carpooling.helpers.handlers.MailJetClientHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
 public class MailJetClientImpl implements MailJetClient {
-    //todo set sender email as a property, recipient email to be taken as a param
-    private static final String SENDER_EMAIL = "";
+
+    @Value("${mail.jet.sender-email}")
+    private String SENDER_EMAIL;
     private static final String RECIPIENT_EMAIL = "";
     private final MailJetWebClientConfig client;
 
@@ -38,10 +40,10 @@ public class MailJetClientImpl implements MailJetClient {
                 )
                 .bodyToMono(String.class)
                 .block();
-        System.out.println(response);
+       // System.out.println(response);
         return response;
     }
-
+    //todo finish method body
     @Override
     public String viewEmailStatus() {
         return null;
