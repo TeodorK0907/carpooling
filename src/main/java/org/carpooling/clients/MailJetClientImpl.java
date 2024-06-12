@@ -3,8 +3,10 @@ package org.carpooling.clients;
 import org.carpooling.clients.contracts.MailJetClient;
 import org.carpooling.config.mail_jet.MailJetWebClientConfig;
 import org.carpooling.exceptions.BadRequestException;
+import org.carpooling.exceptions.UnsuccessfulResponseException;
 import org.carpooling.helpers.constants.mail_jet_client.MailJetClientEndpoint;
-import org.carpooling.helpers.handlers.MailJetClientHandler;
+import org.carpooling.helpers.errors.MailJetClientErrors;
+import org.carpooling.helpers.handlers.MailJetRequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -26,26 +28,51 @@ public class MailJetClientImpl implements MailJetClient {
 
     @Override
     public String sendEmail(String recipientEmail) {
-        String body = MailJetClientHandler.handleRequestBody(SENDER_EMAIL, RECIPIENT_EMAIL);
+        String body = MailJetRequestHandler.handleRequestBody(SENDER_EMAIL, RECIPIENT_EMAIL);
         String response = client.getWithMailJetBaseUrl()
                 .post()
-                .uri(MailJetClientEndpoint.SEND.toString())
+                .uri(uriBuilder -> uriBuilder
+                        .path(MailJetClientEndpoint.V3PointOne.toString())
+                        .path(MailJetClientEndpoint.SEND.toString())
+                        .build())
                 .bodyValue(body)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
-                            return clientResponse.bodyToMono(String.class).flatMap(errorResponse -> {
-                                return Mono.error(new BadRequestException(errorResponse));
+                .onStatus(HttpStatusCode::isError, clientResponse -> {
+                            return clientResponse.bodyToMono(String.class)
+                                    .flatMap(errorResponse -> {
+                                return Mono.error(new UnsuccessfulResponseException
+                                        (MailJetClientErrors.FAILED_RESPONSE.toString())
+                                );
                             });
                         }
                 )
                 .bodyToMono(String.class)
                 .block();
-       // System.out.println(response);
+        // System.out.println(response);
         return response;
     }
-    //todo finish method body
+    //todo add query param and test method
     @Override
-    public String viewEmailStatus() {
-        return null;
+    public String viewEmailStatus(String mailId) {
+        String response = client.getWithMailJetBaseUrl()
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(MailJetClientEndpoint.V3.toString())
+                        .path(MailJetClientEndpoint.MESSAGE.toString())
+                        .path("/" + mailId)
+                        .build())
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, clientResponse -> {
+                    return clientResponse.bodyToMono(String.class)
+                            .flatMap(errorResponse -> {
+                                return Mono.error(new UnsuccessfulResponseException
+                                        (MailJetClientErrors.FAILED_RESPONSE.toString())
+                                );
+                            });
+                }
+                )
+                .bodyToMono(String.class)
+                .block();
+        return response;
     }
 }
