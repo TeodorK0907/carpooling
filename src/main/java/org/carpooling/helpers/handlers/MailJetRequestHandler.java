@@ -4,7 +4,7 @@ import org.carpooling.helpers.constants.mail_jet_client.MailJetClientKey;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class MailJetClientHandler {
+public class MailJetRequestHandler {
     //todo set default verification message constants
     public static String handleRequestBody(String senderEmail, String recipientEmail) {
         return new JSONObject()

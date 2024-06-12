@@ -21,6 +21,12 @@ public class VerificationEmail {
 
     }
 
+    public VerificationEmail(String mailId, String email, VerificationStatus status) {
+        this.mailId = mailId;
+        this.email = email;
+        this.status = status;
+    }
+
     public String getMailId() {
         return mailId;
     }

@@ -1,13 +1,12 @@
-package org.carpooling.helpers.constants.mail_jet_client;
-public enum MailJetClientEndpoint {
-    SEND("/send"),
-    V3PointOne("/v3.1"),
-    V3("/v3/"),
-    MESSAGE("/message");
+package org.carpooling.helpers.errors;
+
+public enum MailJetClientErrors {
+
+    FAILED_RESPONSE("The request could not be processed.");
 
     private final String description;
 
-    MailJetClientEndpoint(String description) {
+    MailJetClientErrors(String description) {
         this.description = description;
     }
 

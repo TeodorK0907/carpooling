@@ -113,6 +113,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User update(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public void block(User authUser, int id) {
         UserValidator.isAdmin(authUser);
         User toBeBlocked = getById(id);
