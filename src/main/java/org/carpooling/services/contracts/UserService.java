@@ -21,6 +21,8 @@ public interface UserService {
 
     User update(User authenticatedUser, User user);
 
+    User update(User user);
+
     void block(User authenticatedUser, int userId);
 
     void unblock(User authenticatedUser, int userId);
