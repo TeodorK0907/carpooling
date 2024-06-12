@@ -5,16 +5,16 @@ import org.carpooling.helpers.constants.VerificationStatus;
 import org.carpooling.helpers.handlers.MailJetResponseHandler;
 import org.carpooling.helpers.validators.MailJetClientValidator;
 import org.carpooling.models.helper_model.VerificationEmail;
-import org.carpooling.repositories.VerificationEmailRepository;
+import org.carpooling.repositories.EmailVerificationRepository;
 import org.carpooling.services.contracts.EmailVerificationService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailVerificationServiceImpl implements EmailVerificationService {
-    private final VerificationEmailRepository mailRepo;
+    private final EmailVerificationRepository mailRepo;
     private final MailJetClient client;
 
-    public EmailVerificationServiceImpl(VerificationEmailRepository mailRepo,
+    public EmailVerificationServiceImpl(EmailVerificationRepository mailRepo,
                                         MailJetClient client) {
         this.mailRepo = mailRepo;
         this.client = client;
