@@ -13,7 +13,8 @@ public enum MailJetClientKey {
     MESSAGE_ID("MessageID"),
     DATA("Data"),
     ATTEMPT_COUNT("AttemptCount"),
-    ID("ID");
+    ID("ID"),
+    SUCCESS("success");
 
     private final String description;
 
