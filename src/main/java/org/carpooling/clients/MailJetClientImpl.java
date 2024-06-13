@@ -2,7 +2,6 @@ package org.carpooling.clients;
 
 import org.carpooling.clients.contracts.MailJetClient;
 import org.carpooling.config.mail_jet.MailJetWebClientConfig;
-import org.carpooling.exceptions.BadRequestException;
 import org.carpooling.exceptions.UnsuccessfulResponseException;
 import org.carpooling.helpers.constants.mail_jet_client.MailJetClientEndpoint;
 import org.carpooling.helpers.errors.MailJetClientErrors;
@@ -18,7 +17,6 @@ public class MailJetClientImpl implements MailJetClient {
 
     @Value("${mail.jet.sender-email}")
     private String SENDER_EMAIL;
-    private static final String RECIPIENT_EMAIL = "";
     private final MailJetWebClientConfig client;
 
     @Autowired
@@ -28,7 +26,7 @@ public class MailJetClientImpl implements MailJetClient {
 
     @Override
     public String sendEmail(String recipientEmail) {
-        String body = MailJetRequestHandler.handleRequestBody(SENDER_EMAIL, RECIPIENT_EMAIL);
+        String body = MailJetRequestHandler.handleRequestBody(SENDER_EMAIL, recipientEmail);
         String response = client.getWithMailJetBaseUrl()
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -48,18 +46,18 @@ public class MailJetClientImpl implements MailJetClient {
                 )
                 .bodyToMono(String.class)
                 .block();
-        // System.out.println(response);
         return response;
     }
-    //todo add query param and test method
+
     @Override
-    public String viewEmailStatus(String mailId) {
+    public String viewEmailStatus(Long mailId) {
         String response = client.getWithMailJetBaseUrl()
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(MailJetClientEndpoint.V3.toString())
+                        .path(MailJetClientEndpoint.REST.toString())
                         .path(MailJetClientEndpoint.MESSAGE.toString())
-                        .path("/" + mailId)
+                        .path(MailJetClientEndpoint.RESOURCE_SEPARATOR.toString() + mailId)
                         .build())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> {

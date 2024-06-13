@@ -1,15 +1,13 @@
 package org.carpooling.helpers.constants.mail_jet_client;
-public enum MailJetClientEndpoint {
-    RESOURCE_SEPARATOR("/"),
-    SEND("/send"),
-    V3PointOne("/v3.1"),
-    V3("/v3"),
-    REST("/REST"),
-    MESSAGE("/message");
+
+public enum MailJetClientRequestBody {
+    BLANK(""),
+    EMAIL_HTML_PART("<h3>mail sent successfully!, please click to validate " +
+            "<a href=\"https://www.google.com/\">RoseValleyTravel</a>!</h3><br />.");
 
     private final String description;
 
-    MailJetClientEndpoint(String description) {
+    MailJetClientRequestBody(String description) {
         this.description = description;
     }
 

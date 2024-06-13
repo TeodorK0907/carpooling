@@ -8,9 +8,8 @@ import java.util.Objects;
 @Table(name = "verification_email", schema = "rose-valley-travel")
 public class VerificationEmail {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mail_id")
-    private String mailId;
+    private Long mailId;
     @Column(name = "email")
     private String email;
     @Enumerated(EnumType.ORDINAL)
@@ -21,17 +20,17 @@ public class VerificationEmail {
 
     }
 
-    public VerificationEmail(String mailId, String email, VerificationStatus status) {
+    public VerificationEmail(Long mailId, String email, VerificationStatus status) {
         this.mailId = mailId;
         this.email = email;
         this.status = status;
     }
 
-    public String getMailId() {
+    public Long getMailId() {
         return mailId;
     }
 
-    public void setMailId(String mailId) {
+    public void setMailId(Long mailId) {
         this.mailId = mailId;
     }
 

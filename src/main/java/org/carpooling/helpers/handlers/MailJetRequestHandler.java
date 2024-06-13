@@ -1,11 +1,11 @@
 package org.carpooling.helpers.handlers;
 
 import org.carpooling.helpers.constants.mail_jet_client.MailJetClientKey;
+import org.carpooling.helpers.constants.mail_jet_client.MailJetClientRequestBody;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class MailJetRequestHandler {
-    //todo set default verification message constants
     public static String handleRequestBody(String senderEmail, String recipientEmail) {
         return new JSONObject()
                 .put(MailJetClientKey.MESSAGES.toString(), new JSONArray()
@@ -17,9 +17,9 @@ public class MailJetRequestHandler {
                                         .put(new JSONObject()
                                                 .put(MailJetClientKey.EMAIL.toString(), recipientEmail)
                                                 .put(MailJetClientKey.NAME.toString(), "")))
-                                .put(MailJetClientKey.SUBJECT.toString(), "")
-                                .put(MailJetClientKey.TEXT_PART.toString(), "")
-                                .put(MailJetClientKey.HTML_PART.toString(), "<h3>mail sent successfully!</h3><br />.")
+                                .put(MailJetClientKey.SUBJECT.toString(), MailJetClientRequestBody.BLANK.toString())
+                                .put(MailJetClientKey.TEXT_PART.toString(), MailJetClientRequestBody.BLANK.toString())
+                                .put(MailJetClientKey.HTML_PART.toString(), MailJetClientRequestBody.EMAIL_HTML_PART.toString())
                         )).toString();
     }
 }

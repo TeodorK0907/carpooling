@@ -22,7 +22,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     @Override
     public void sendEmail(String userEmail) {
-        String mailId = MailJetResponseHandler
+        Long mailId = MailJetResponseHandler
                 .extractMailId(client.sendEmail(userEmail));
         VerificationEmail mail = new VerificationEmail(
                 mailId, userEmail, VerificationStatus.SENT

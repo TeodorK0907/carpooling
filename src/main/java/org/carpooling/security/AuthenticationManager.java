@@ -41,7 +41,7 @@ public class AuthenticationManager {
                 if (!mailService.isEmailVerified(user.getEmail())) {
                     throw new UnauthorizedOperationException(UserValidatorErrors.UNAUTHORIZED.toString());
                 } else {
-                    userService.update(user);
+                    userService.verify(user);
                 }
             }
             return user;

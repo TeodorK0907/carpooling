@@ -4,8 +4,6 @@ import org.carpooling.helpers.model_filters.UserFilterOptions;
 import org.carpooling.models.User;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface UserService {
     Page<User> getAll(User authenticatedUser, UserFilterOptions filter);
 
@@ -21,7 +19,7 @@ public interface UserService {
 
     User update(User authenticatedUser, User user);
 
-    User update(User user);
+    User verify(User user);
 
     void block(User authenticatedUser, int userId);
 

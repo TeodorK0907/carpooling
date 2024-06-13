@@ -115,7 +115,7 @@ CREATE TABLE travel_passengers
 
 CREATE TABLE verification_email
 (
-    mail_id varchar primary key,
+    mail_id bigint primary key,
     email varchar(50) unique not null,
     status_id int not null
 )
