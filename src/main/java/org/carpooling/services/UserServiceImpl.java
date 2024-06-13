@@ -97,8 +97,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(User user) {
         doesUserDataAlreadyExist(user);
-        userRepository.save(user);
         mailService.sendEmail(user.getEmail());
+        userRepository.save(user);
         return user;
     }
 
@@ -113,7 +113,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
+    public User verify(User user) {
+        user.setVerified(true);
         return userRepository.save(user);
     }
 
