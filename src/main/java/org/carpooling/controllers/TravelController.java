@@ -67,12 +67,48 @@ public class TravelController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthenticatedRequestException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
+    @GetMapping("/planned")
+    public ResponseEntity<Page<Travel>> getAllPlannedTravels(@RequestHeader HttpHeaders headers,
+                                                             @RequestParam(required = false) String startLocation,
+                                                             @RequestParam(required = false) String endLocation,
+                                                             @RequestParam(required = false) String driver,
+                                                             @RequestParam(required = false)
+                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                                 LocalDateTime departAfter,
+                                                             @RequestParam(required = false)
+                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                                 LocalDateTime departBefore,
+                                                             @RequestParam(required = false) Integer freeSpots,
+                                                             @RequestParam(required = false) Integer pageNum,
+                                                             @RequestParam(required = false) Integer pageSize,
+                                                             @RequestParam(required = false) String sortBy,
+                                                             @RequestParam(required = false) String orderBy
+                                                             ) {
+        try {
+            User authenticatedUser = authManager.fetchUser(headers);
+            TravelFilterOptions travelFilter = new TravelFilterOptions(
+                    startLocation, endLocation, driver, departAfter, departBefore,
+                    freeSpots, pageNum, pageSize, sortBy, orderBy
+            );
+            Page<Travel> result = travelService.getAllPlanned(authenticatedUser, travelFilter);
+            return ResponseEntity.ok().body(result);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthenticatedRequestException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TravelOutputDto> getTravelById(@RequestHeader HttpHeaders headers,
-                                                @PathVariable int id) {
+                                                         @PathVariable int id) {
         try {
             authManager.fetchUser(headers);
             Travel travel = travelService.getById(id);
@@ -82,12 +118,14 @@ public class TravelController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthenticatedRequestException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @PostMapping
     public ResponseEntity<TravelOutputDto> createTravel(@RequestHeader HttpHeaders headers,
-                                               @Valid @RequestBody TravelDto dto) {
+                                                        @Valid @RequestBody TravelDto dto) {
         try {
             User authUser = authManager.fetchUser(headers);
             Travel travel = travelMapper.toObj(authUser, dto);
@@ -123,6 +161,7 @@ public class TravelController {
         }
 
     }
+
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelTravel(@RequestHeader HttpHeaders headers,
                                              @PathVariable int id) {
@@ -136,7 +175,7 @@ public class TravelController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }  catch (BadRequestException e) {
+        } catch (BadRequestException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

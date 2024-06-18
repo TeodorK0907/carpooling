@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 
 public interface TravelService {
     Page<Travel> getAll(User authenticatedUser, TravelFilterOptions filter);
+    Page<Travel> getAllPlanned(User authenticatedUser, TravelFilterOptions filter);
 
     Travel getById(int travelId);
 
