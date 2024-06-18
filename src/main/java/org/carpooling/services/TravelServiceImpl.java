@@ -77,6 +77,35 @@ public class TravelServiceImpl implements TravelService {
     }
 
     @Override
+    public Page<Travel> getAllPlanned(User authenticatedUser, TravelFilterOptions filter) {
+        Page<Travel> travels;
+        Sort sort = Sort.by(
+                TravelFilterValidator.getOrder(filter.getOrderBy()),
+                TravelFilterValidator.getSort(filter.getSortBy()));
+        Pageable page = PageRequest.of(
+                TravelFilterValidator.getPageNum(filter.getPageNum())
+                , TravelFilterValidator.getPageSize(filter.getPageSize()),
+                sort);
+        travels = travelRepository.findAllPlannedWithFilter(
+                String.format(TravelFiltersDefaultParam.FORMAT, filter.getStartLocation()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_STRING_FILTER)),
+                String.format(TravelFiltersDefaultParam.FORMAT, filter.getEndLocation()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_STRING_FILTER)),
+                String.format(TravelFiltersDefaultParam.FORMAT, filter.getDriver()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_STRING_FILTER)),
+                filter.getDepartAfter()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_DATE_AFTER),
+                filter.getDepartBefore()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_DATE_BEFORE),
+                filter.getFreeSpots()
+                        .orElse(TravelFiltersDefaultParam.EMPTY_FREE_SPOTS),
+                page
+        );
+        TravelValidator.isTravelListEmpty(travels);
+        return travels;
+    }
+
+    @Override
     public Travel getById(int travelId) {
         Travel travel = travelRepository.findById(travelId).orElseThrow(
                 () -> new EntityNotFoundException(TRAVEL.toString(), ID.toString(), String.valueOf(travelId)));

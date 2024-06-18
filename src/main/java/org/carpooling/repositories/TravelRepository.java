@@ -29,4 +29,22 @@ public interface TravelRepository extends JpaRepository<Travel, Integer> {
                                    @Param("departBefore") LocalDateTime departBefore,
                                    @Param("freeSpots") Integer freeSpots,
                                    Pageable page);
+
+    @Query("select t from Travel t "
+            + "where (:startLocation='' or t.startingTravelPoint.address like :startLocation) "
+            + "and (:endLocation='' or t.endingTravelPoint.address like :endLocation) "
+            + "and (:driver='' or t.creator.username like :driver) "
+            + "and t.departureTime >= :departAfter "
+            + "and t.departureTime <= :departBefore "
+            + "and t.free_spots >= :freeSpots "
+            + "and t.status = 0"
+    )
+    Page<Travel> findAllPlannedWithFilter(@Param("startLocation")String startLocation,
+                                          @Param("endLocation")String endLocation,
+                                          @Param("driver") String driver,
+                                          @Param("departAfter") LocalDateTime departAfter,
+                                          @Param("departBefore") LocalDateTime departBefore,
+                                          @Param("freeSpots") Integer freeSpots,
+                                          Pageable page
+    );
 }
