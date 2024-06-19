@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
                         page
                 );
 
-        UserValidator.isUserListEmpty(users);
+        UserValidator.isUserListEmpty(users.getContent());
         return users;
     }
 
