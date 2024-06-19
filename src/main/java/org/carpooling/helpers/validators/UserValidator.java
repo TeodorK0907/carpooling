@@ -6,8 +6,8 @@ import org.carpooling.exceptions.UnauthorizedOperationException;
 import org.carpooling.helpers.constants.UserRole;
 import org.carpooling.helpers.errors.UserValidatorErrors;
 import org.carpooling.models.User;
-import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.carpooling.helpers.constants.ModelNames.USER;
@@ -46,8 +46,8 @@ public class UserValidator {
         }
     }
 
-    public static boolean isUserListEmpty(Page<User> list) {
-        if (list.getContent().isEmpty()) {
+    public static boolean isUserListEmpty(List<User> list) {
+        if (list.isEmpty()) {
             throw new EntityNotFoundException(UserValidatorErrors.NO_USERS_FOUND.toString());
         }
         return false;

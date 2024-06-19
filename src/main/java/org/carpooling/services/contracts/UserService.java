@@ -5,6 +5,7 @@ import org.carpooling.models.User;
 import org.springframework.data.domain.Page;
 
 public interface UserService {
+
     Page<User> getAll(User authenticatedUser, UserFilterOptions filter);
 
     User getById(int userId);
