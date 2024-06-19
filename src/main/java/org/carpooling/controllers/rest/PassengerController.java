@@ -1,13 +1,13 @@
-package org.carpooling.controllers;
+package org.carpooling.controllers.rest;
 
 import org.carpooling.exceptions.EntityNotFoundException;
 import org.carpooling.exceptions.UnauthenticatedRequestException;
 import org.carpooling.exceptions.UnauthorizedOperationException;
-import org.carpooling.mappers.CandidateMapper;
-import org.carpooling.models.Candidate;
+import org.carpooling.mappers.PassengerMapper;
+import org.carpooling.models.Passenger;
 import org.carpooling.models.User;
 import org.carpooling.security.AuthenticationManager;
-import org.carpooling.services.contracts.CandidateService;
+import org.carpooling.services.contracts.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,29 +16,30 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/travels/{travelId}/candidates")
-public class CandidateController {
+@RequestMapping("/api/travels/{travelId}/passengers")
+public class PassengerController {
     private final AuthenticationManager authManager;
-    private final CandidateService candidateService;
-    private final CandidateMapper candidateMapper;
+    private final PassengerService passengerService;
+    private final PassengerMapper passengerMapper;
 
     @Autowired
-    public CandidateController(AuthenticationManager authManager,
-                               CandidateService candidateService,
-                               CandidateMapper candidateMapper) {
+    public PassengerController(AuthenticationManager authManager,
+                               PassengerService passengerService,
+                               PassengerMapper passengerMapper) {
         this.authManager = authManager;
-        this.candidateService = candidateService;
-        this.candidateMapper = candidateMapper;
+        this.passengerService = passengerService;
+        this.passengerMapper = passengerMapper;
     }
 
-    @PostMapping()
-    public ResponseEntity<Candidate> applyForTravel(@RequestHeader HttpHeaders headers,
-                                                    @PathVariable int travelId) {
+    @PostMapping("/{candidateId}")
+    public ResponseEntity<Void> approveCandidate(@RequestHeader HttpHeaders headers,
+                                                 @PathVariable int travelId,
+                                                 @PathVariable int candidateId) {
         try {
             User authUser = authManager.fetchUser(headers);
-            Candidate candidate = candidateMapper.toObj(authUser, travelId);
-            candidateService.apply(authUser, candidate, travelId);
-            return ResponseEntity.ok().body(candidate);
+            Passenger passenger = passengerMapper.toObj(candidateId);
+            passengerService.approve(authUser, passenger, travelId);
+            return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthenticatedRequestException e) {
@@ -48,13 +49,13 @@ public class CandidateController {
         }
     }
 
-    @DeleteMapping("/{candidateId}")
-    public ResponseEntity<Void> resignFromTravel(@RequestHeader HttpHeaders headers,
+    @DeleteMapping("/{passengerId}")
+    public ResponseEntity<Void> removePassenger(@RequestHeader HttpHeaders headers,
                                                  @PathVariable int travelId,
-                                                 @PathVariable int candidateId) {
+                                                 @PathVariable int passengerId) {
         try {
             User authUser = authManager.fetchUser(headers);
-            candidateService.resign(authUser, travelId, candidateId);
+            passengerService.decline(authUser, passengerId, travelId);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

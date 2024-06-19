@@ -1,4 +1,4 @@
-package org.carpooling.controllers;
+package org.carpooling.controllers.rest;
 
 import jakarta.validation.Valid;
 import org.carpooling.exceptions.*;

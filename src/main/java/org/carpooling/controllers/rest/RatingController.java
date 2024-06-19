@@ -1,4 +1,4 @@
-package org.carpooling.controllers;
+package org.carpooling.controllers.rest;
 
 import org.carpooling.exceptions.BadRequestException;
 import org.carpooling.exceptions.DuplicateRequestException;
