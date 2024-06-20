@@ -66,6 +66,7 @@ public class CandidateServiceImpl implements CandidateService {
             travel.getCandidates().remove(toRemove);
             travelService.update(travel);
             candidateRepository.delete(toRemove);
+            return;
         }
         throw new UnauthorizedOperationException(CandidateValidatorErrors.UNAUTHORIZED.toString());
     }
